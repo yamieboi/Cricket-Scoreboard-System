@@ -1,20 +1,49 @@
 <script>
     import { fade } from 'svelte/transition';
 
-    let teamNameContainer;
     let matchSetupContainer;
+    let teamNameContainer;
+    let tossOversContainer;
+
     let teamOneName = $state('');
     let teamTwoName =  $state('');
+    let oversPerInnings = $state('1');
     let teamOnePlayers = $state([]);
     let teamTwoPlayers = $state([]);
+    let tossResult = $state('Toss');
+
+    let alreadyFlipped = false;
 
     function proceedToMatchSettings() {
         teamNameContainer.style.display = 'none';
-        matchSetupContainer.style.height = '100vh';
-        matchSetupContainer.style.width = '70vw';
+/*         matchSetupContainer.style.height = '100vh';
+        matchSetupContainer.style.width = '70vw'; */
         /* teamNameContainer.fade(); */
-        console.log(TeamOneName, TeamTwoName)
+        tossOversContainer.style = `       
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2vh;
+        `;
         console.log()  
+    };
+
+    function intiateToss() {
+        if (!alreadyFlipped) {
+            alreadyFlipped = true;
+            tossResult.value = 'Flipping the coin, Dhoirjo!';
+            let randomResult = Math.floor(Math.random() * 100);
+            setTimeout(() => {
+                if (randomResult <= 50) {
+                    tossResult.value = 'Heads';
+                } else {
+                    tossResult.value = 'Tails';
+                }
+            }, 3000);
+        }
     };
 
 </script>
@@ -30,15 +59,15 @@
 
     <div class="match-setup" bind:this={matchSetupContainer}>
         <div class="match-setup-title" style="font-family: Outfit; font-size: 4vh; padding-top: 2vh; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match Setup</div>
-        <div class="team-names-field" bind:this={teamNameContainer}  out:fade>
+        <div class="team-names-field" bind:this={teamNameContainer}>
             <div class="team-one-prompt-box">
                 <!-- <div class="team-name-ask" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">First Team Name?</div> -->
-                <input class="team-name-input" placeholder="First Team Name?" type="text" minlength="4" maxlength="20" bind:value={TeamOneName}>
+                <input class="team-name-input" placeholder="First Team Name?" type="text" minlength="4" maxlength="20" bind:value={teamOneName}>
             </div>
 
             <div class="team-two-prompt-box">
                 <!-- <div class="team-name-ask" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Second Team Name?</div> -->
-                <input class="team-name-input" placeholder="Second Team Name?" type="text" minlength="4" maxlength="20" bind:value={TeamTwoName}> 
+                <input class="team-name-input" placeholder="Second Team Name?" type="text" minlength="4" maxlength="20" bind:value={teamTwoName}> 
             </div>
 
             <div class="proceed-box">
@@ -46,6 +75,22 @@
             </div>
 
         </div>
+        <div class="overs-toss-field" bind:this={tossOversContainer} style="display:none">
+            <div class="overs-selection-box">
+                <div class="overs-selection-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">How many overs per innings?</div>
+                <input class="overs-input" type="number" min="1" bind:value={oversPerInnings}>
+            </div>
+
+            <div class="toss-box">
+                <div class="toss-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Initiate Toss <br> (Let one team call.)</div>
+                <input class="button-toss" type="button" value="Toss" bind:this={tossResult} on:click={intiateToss}>
+            </div>
+
+            <div class="proceed-box-second">
+                <input class="button-proceed-box-second" type="button" value="Proceed" on:click={proceedToMatchSettings}>
+            </div>
+        </div>
+        
     </div>
 </div>
 
@@ -110,6 +155,52 @@
         scale: 0.98;
     }
 
+    .overs-toss-field{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .proceed-box-second{
+        margin-top: 4vh;
+    }
+    
+    .button-proceed-box-second{
+        height: 6vh;
+        width: 25vw;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 3vh; 
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+    }
+
+    .button-toss{
+        height: 6vh;
+        width: 25vw;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 3vh; 
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+    }
+
+    .button-toss:active{
+        scale: 0.98; 
+    }
+
+    .button-proceed-box-second:active{
+        scale: 0.98;
+    }
+
+
     .team-name-input{
         height: 6vh;
         width: 25vw;
@@ -123,6 +214,21 @@
         user-select:none;
         text-align: center;
     }
+
+    .overs-input{
+        height: 4vh;
+        width: 4vw;
+        background-color: rgb(255, 255, 255);
+        box-shadow: none;
+        font-family: Outfit; 
+        font-size: 3vh; 
+        font-weight: 500;
+        border-radius: 5px;
+        color:rgba(0, 0, 0, 0.925);
+        user-select: none;
+        text-align: center;
+    }
+
     input {border:0;outline:0;}
     input:focus {outline:none!important;}
 /*     :global(body){
