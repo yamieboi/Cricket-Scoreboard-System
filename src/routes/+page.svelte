@@ -21,12 +21,13 @@
         /* teamNameContainer.fade(); */
         tossOversContainer.style = `       
             display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
+            flex-flow: column;
+            place-content: center;
+            align-items: flex-start;
+            margin-top: 2vh;
+            flex-wrap: wrap;
             align-content: center;
             justify-content: center;
-            align-items: center;
-            margin-top: 2vh;
         `;
         console.log()  
     };
@@ -76,7 +77,7 @@
 
         </div>
         <div class="overs-toss-field" bind:this={tossOversContainer} style="display:none">
-            <div class="overs-selection-box">
+            <div class="overs-selection-box" style="margin-bottom: 1vh;">
                 <div class="overs-selection-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">How many overs per innings?</div>
                 <input class="overs-input" type="number" min="1" bind:value={oversPerInnings}>
             </div>
@@ -165,7 +166,7 @@
     }
 
     .proceed-box-second{
-        margin-top: 4vh;
+        margin-top: 2vh;
     }
     
     .button-proceed-box-second{
