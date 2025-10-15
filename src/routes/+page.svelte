@@ -4,7 +4,16 @@
     let matchSetupContainer;
     let teamNameContainer;
     let tossOversContainer;
+    let tossDecisionContainer;
     let proceedButtonBox;
+
+    let teamOneTossButton;
+    let teamTwoTossButton;
+    let batButton;
+    let bowlButton;
+
+
+    let tossWinTeamDecision;
 
     let teamOneName = $state('');
     let teamTwoName =  $state('');
@@ -32,9 +41,20 @@
             `;
         }
 
-        if (alreadyFlipped && teamNamesEntered) {
+        if (alreadyFlipped && teamNamesEntered && (tossResult.value == 'Heads' || tossResult.value == 'Tails')) {
             tossOversContainer.style.display = 'none';
-            proceedButtonBox.style.display = 'none';
+            /* proceedButtonBox.style.display = 'none'; */
+            tossDecisionContainer.style = `       
+                display: flex;
+                flex-flow: column;
+                place-content: center;
+                align-items: flex-start;
+                margin-top: 1vh;
+                margin-left: 5vw;
+                flex-wrap: wrap;
+                align-content: center;
+                justify-content: center;
+            `;
 /*             matchSetupContainer.style.height = '100vh';
             matchSetupContainer.style.width = '70vw';  */
         };
@@ -53,6 +73,29 @@
                 }
             }, 3000);
         };
+    };
+
+    function TossWinTeamSelect(p1, p2) {
+        console.log(p1, p2);
+
+    };
+
+    function TossWinTeamDecisionSelect(p1, p2) {
+        console.log(p1, p2, tossWinTeamDecision, (tossWinTeamDecision != p1));
+
+        if (tossWinTeamDecision != p1) {
+            console.log('change colour');
+            batButton.style.backgroundColor = "#f0f0f0";
+            bowlButton.style.backgroundColor = "#f0f0f0";
+        };
+
+        tossWinTeamDecision = p1;
+        if (p1 == "bat") {
+            batButton.style.backgroundColor = "#c9ffd4";
+        } else {
+            bowlButton.style.backgroundColor = "#c9ffd4";
+        }
+
     };
 
 </script>
@@ -97,15 +140,17 @@
             </div>
         </div>
 
-        <div class="toss-decision-selection-field" bind:this={tossOversContainer} style="display:none">
+        <div class="toss-decision-selection-field" bind:this={tossDecisionContainer} style="display:none">
             <div class="team-toss-win-box" style="margin-bottom: 1vh;">
-                <div class="team-toss-win-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">How many overs per innings?</div>
-                <input class="overs-input" type="number" min="1" bind:value={oversPerInnings}>
+                <div class="team-toss-win-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Which team won the toss?</div>
+                <input class="button-team-toss-win" type="button" value={teamOneName} bind:this={teamOneTossButton} on:click={() => TossWinTeamSelect(teamOneName)}>
+                <input class="button-team-toss-win" type="button" value={teamTwoName} bind:this={teamTwoTossButton} on:click={() => TossWinTeamSelect(teamTwoName)}>
             </div>
 
-            <div class="toss-box">
-                <div class="toss-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Initiate Toss <br> (Let one team call.)</div>
-                <input class="button-toss" type="button" value="Toss" bind:this={tossResult} on:click={intiateToss}>
+            <div class="team-toss-decision-box" style="margin-left:20%">
+                <!-- <div class="team-toss-decision-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">What have they decided to do? <br> (Bhai Bat Koiren Nah!)</div> -->
+                <input class="button-team-toss-decision" type="button" value="Bat" bind:this={batButton} on:click={() => TossWinTeamDecisionSelect('bat')}>
+                <input class="button-team-toss-decision" type="button" value="Bowl" bind:this={bowlButton}  on:click={() => TossWinTeamDecisionSelect('bowl')}>
             </div>
         </div>
 
@@ -184,6 +229,14 @@
         scale: 0.98;
     }
 
+
+    .button-team-toss-win:active{
+        scale: 0.98;
+    }
+
+    .button-team-toss-decision:active{
+        scale: 0.98;
+    }
 /*     .overs-toss-field{
         display: flex;
         flex-direction: column;
@@ -216,7 +269,7 @@
     .team-name-input{
         height: 6vh;
         width: 25vw;
-        background-color: rgb(255, 255, 255);
+        background-color: rgb(240 240 240);
         box-shadow: none;
         font-family: Outfit; 
         font-size: 3vh; 
@@ -230,7 +283,7 @@
     .overs-input{
         height: 3vh;
         width: 3vw;
-        background-color: rgb(255, 255, 255);
+        background-color: rgb(240 240 240);
         box-shadow: none;
         font-family: Outfit;
         font-size: 1.2rem;
@@ -239,6 +292,32 @@
         color: rgba(0, 0, 0, 0.925);
         user-select: none;
         text-align: center;
+        margin-top: 0.5vh;
+    }
+
+    .button-team-toss-win{
+        height: 5.5vh;
+        width: 25vw;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 3vh; 
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+        margin-top: 0.5vh;
+    }
+
+    .button-team-toss-decision{
+        height: 4vh;
+        width: 6vw;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 3vh;
+        font-weight: 600;
+        border-radius: 5px;
+        border: 0;
+        outline: 0;
         margin-top: 0.5vh;
     }
 
