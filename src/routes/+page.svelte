@@ -4,6 +4,7 @@
     let matchSetupContainer;
     let teamNameContainer;
     let tossOversContainer;
+    let proceedButtonBox;
 
     let teamOneName = $state('');
     let teamTwoName =  $state('');
@@ -13,29 +14,36 @@
     let tossResult = $state('Toss');
 
     let alreadyFlipped = false;
+    let teamNamesEntered = false;
 
-    function proceedToMatchSettings() {
-        teamNameContainer.style.display = 'none';
-/*         matchSetupContainer.style.height = '100vh';
-        matchSetupContainer.style.width = '70vw'; */
-        /* teamNameContainer.fade(); */
-        tossOversContainer.style = `       
-            display: flex;
-            flex-flow: column;
-            place-content: center;
-            align-items: flex-start;
-            margin-top: 2vh;
-            flex-wrap: wrap;
-            align-content: center;
-            justify-content: center;
-        `;
-        console.log()  
+    function ProceedButton() {
+        if (!teamNamesEntered && (teamOneName != '' && teamTwoName != '')) {
+            teamNamesEntered = true;
+            teamNameContainer.style.display = 'none';
+            tossOversContainer.style = `       
+                display: flex;
+                flex-flow: column;
+                place-content: center;
+                align-items: flex-start;
+                margin-top: 1vh;
+                flex-wrap: wrap;
+                align-content: center;
+                justify-content: center;
+            `;
+        }
+
+        if (alreadyFlipped && teamNamesEntered) {
+            tossOversContainer.style.display = 'none';
+            proceedButtonBox.style.display = 'none';
+/*             matchSetupContainer.style.height = '100vh';
+            matchSetupContainer.style.width = '70vw';  */
+        };
     };
 
     function intiateToss() {
         if (!alreadyFlipped) {
             alreadyFlipped = true;
-            tossResult.value = 'Flipping the coin, Dhoirjo!';
+            tossResult.value = 'Dhoirjo Dhorun!';
             let randomResult = Math.floor(Math.random() * 100);
             setTimeout(() => {
                 if (randomResult <= 50) {
@@ -44,7 +52,7 @@
                     tossResult.value = 'Tails';
                 }
             }, 3000);
-        }
+        };
     };
 
 </script>
@@ -71,11 +79,12 @@
                 <input class="team-name-input" placeholder="Second Team Name?" type="text" minlength="4" maxlength="20" bind:value={teamTwoName}> 
             </div>
 
-            <div class="proceed-box">
+<!--             <div class="proceed-box">
                 <input class="button-proceed-box" type="button" value="Proceed" on:click={proceedToMatchSettings}>
-            </div>
+            </div> -->
 
         </div>
+
         <div class="overs-toss-field" bind:this={tossOversContainer} style="display:none">
             <div class="overs-selection-box" style="margin-bottom: 1vh;">
                 <div class="overs-selection-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">How many overs per innings?</div>
@@ -86,12 +95,24 @@
                 <div class="toss-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Initiate Toss <br> (Let one team call.)</div>
                 <input class="button-toss" type="button" value="Toss" bind:this={tossResult} on:click={intiateToss}>
             </div>
+        </div>
 
-            <div class="proceed-box-second">
-                <input class="button-proceed-box-second" type="button" value="Proceed" on:click={proceedToMatchSettings}>
+        <div class="toss-decision-selection-field" bind:this={tossOversContainer} style="display:none">
+            <div class="team-toss-win-box" style="margin-bottom: 1vh;">
+                <div class="team-toss-win-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">How many overs per innings?</div>
+                <input class="overs-input" type="number" min="1" bind:value={oversPerInnings}>
+            </div>
+
+            <div class="toss-box">
+                <div class="toss-prompt" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Initiate Toss <br> (Let one team call.)</div>
+                <input class="button-toss" type="button" value="Toss" bind:this={tossResult} on:click={intiateToss}>
             </div>
         </div>
-        
+
+        <div class="proceed-box" bind:this={proceedButtonBox}>
+            <input class="button-proceed-box" type="button" value="Proceed" on:click={ProceedButton}>
+        </div>
+
     </div>
 </div>
 
@@ -109,12 +130,18 @@
         justify-content: center;
     }
     .match-setup{
-        height:40vh;
-        width:35vw;
+        height: 40vh;
+        width: 35vw;
         color: rgb(255, 255, 255);
         background-color: rgba(3, 3, 3, 0.7);
         position: relative;
+        display: flex;
         border-radius: 5px;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: flex-start;
+        align-items: center;
     }
 
     .team-one-prompt-box{
@@ -128,7 +155,7 @@
     }
 
     .team-names-field{
-        margin-top: 3vh;
+        margin-top: 15vh;
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
@@ -137,7 +164,8 @@
     }
 
     .proceed-box{
-        margin-top: 20vh;
+        margin-top: 30vh;
+        position: absolute;
     }
     
     .button-proceed-box{
@@ -156,30 +184,16 @@
         scale: 0.98;
     }
 
-    .overs-toss-field{
+/*     .overs-toss-field{
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
         align-content: center;
         justify-content: center;
         align-items: center;
-    }
+        margin-top: 15vh;
+    } */
 
-    .proceed-box-second{
-        margin-top: 2vh;
-    }
-    
-    .button-proceed-box-second{
-        height: 6vh;
-        width: 25vw;
-        color:rgba(0, 0, 0, 0.8);
-        font-family: Outfit; 
-        font-size: 3vh; 
-        font-weight: 600;
-        border-radius: 5px;
-        border:0;
-        outline:0;
-    }
 
     .button-toss{
         height: 6vh;
@@ -191,14 +205,11 @@
         border-radius: 5px;
         border:0;
         outline:0;
+        margin-top: 0.5vh;
     }
 
     .button-toss:active{
         scale: 0.98; 
-    }
-
-    .button-proceed-box-second:active{
-        scale: 0.98;
     }
 
 
@@ -217,17 +228,18 @@
     }
 
     .overs-input{
-        height: 4vh;
-        width: 4vw;
+        height: 3vh;
+        width: 3vw;
         background-color: rgb(255, 255, 255);
         box-shadow: none;
-        font-family: Outfit; 
-        font-size: 3vh; 
-        font-weight: 500;
+        font-family: Outfit;
+        font-size: 1.2rem;
+        font-weight: 600;
         border-radius: 5px;
-        color:rgba(0, 0, 0, 0.925);
+        color: rgba(0, 0, 0, 0.925);
         user-select: none;
         text-align: center;
+        margin-top: 0.5vh;
     }
 
     input {border:0;outline:0;}
