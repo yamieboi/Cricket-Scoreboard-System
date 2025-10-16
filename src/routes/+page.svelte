@@ -68,8 +68,8 @@
         if (tossWinTeamDecision && tossWinTeam) {
             tossDecisionContainer.style.display = `none`;
             buttonProceed.style.display = 'none'
-            matchSetupContainer.style.height = '100vh';
-            matchSetupContainer.style.width = '70vw'; 
+            matchSetupContainer.style.height = '700px';
+            matchSetupContainer.style.width = '350px'; 
         };
     };
 
