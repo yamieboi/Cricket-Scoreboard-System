@@ -17,6 +17,9 @@
     let tossWinTeamDecision;
     let tossWinTeam;
 
+    let battingTeamName;
+    let bowlingTeamName;
+
     let teamOneName = $state('');
     let teamTwoName =  $state('');
     let oversPerInnings = $state('1');
@@ -70,6 +73,16 @@
             buttonProceed.style.display = 'none'
             matchSetupContainer.style.height = '700px';
             matchSetupContainer.style.width = '350px'; 
+
+            if (tossWinTeamDecision == 'bat') {
+                battingTeamName = tossWinTeam;
+                bowlingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName
+            } else {
+                bowlingTeamName = tossWinTeam;
+                battingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName
+            };
+
+            console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
         };
     };
 
@@ -141,18 +154,12 @@
         <div class="match-setup-title" style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match Setup</div>
         <div class="team-names-field" bind:this={teamNameContainer}>
             <div class="team-one-prompt-box">
-                <!-- <div class="team-name-ask" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">First Team Name?</div> -->
                 <input class="team-name-input" placeholder="First Team Name?" type="text" minlength="4" maxlength="12" bind:value={teamOneName}>
             </div>
 
             <div class="team-two-prompt-box">
-                <!-- <div class="team-name-ask" style="font-family: Outfit; font-size: 2vh; padding-top: 0vh; font-weight: 500; user-select:none; color:rgba(255, 255, 255, 0.8);">Second Team Name?</div> -->
                 <input class="team-name-input" placeholder="Second Team Name?" type="text" minlength="4" maxlength="12" bind:value={teamTwoName}> 
             </div>
-
-<!--             <div class="proceed-box">
-                <input class="button-proceed-box" type="button" value="Proceed" on:click={proceedToMatchSettings}>
-            </div> -->
 
         </div>
 
@@ -186,6 +193,15 @@
             <input class="button-proceed-box" type="button" value="Proceed" bind:this={buttonProceed} on:click={ProceedButton}>
         </div>
 
+    </div>
+
+
+    <div class="math-container">
+        <div class="batting-scorecard">
+            <div class="batting-team-name">
+                <!-- {} -->
+            </div>
+        </div>
     </div>
 </div>
 
