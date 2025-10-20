@@ -2,11 +2,14 @@
     import { fade } from 'svelte/transition';
 
     let matchSetupContainer;
+    let MatchContainer;
     let teamNameContainer;
     let tossOversContainer;
     let tossDecisionContainer;
     let proceedButtonBox;
     let buttonProceed;
+    let matchTitle;
+    let windowTitle;
 
     let teamOneTossButton;
     let teamTwoTossButton;
@@ -17,8 +20,8 @@
     let tossWinTeamDecision;
     let tossWinTeam;
 
-    let battingTeamName;
-    let bowlingTeamName;
+    let battingTeamName = $state('');
+    let bowlingTeamName = $state('');
 
     let teamOneName = $state('');
     let teamTwoName =  $state('');
@@ -36,6 +39,8 @@
 
     let teamOneBowling = {}
     let teamTwoBowling = {}
+
+    let testing = true
 
     function ProceedButton() {
         if (!teamNamesEntered && (teamOneName != '' && teamTwoName != '') && !(teamOneName == teamTwoName)) {
@@ -70,17 +75,32 @@
 
         if (tossWinTeamDecision && tossWinTeam) {
             tossDecisionContainer.style.display = `none`;
-            buttonProceed.style.display = 'none'
-            matchSetupContainer.style.height = '700px';
-            matchSetupContainer.style.width = '350px'; 
+            buttonProceed.style.display = 'none';
+            windowTitle.innerHTML = "Match";
+            matchSetupContainer.style.display = 'none';
 
             if (tossWinTeamDecision == 'bat') {
                 battingTeamName = tossWinTeam;
-                bowlingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName
+                bowlingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName;
             } else {
                 bowlingTeamName = tossWinTeam;
-                battingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName
+                battingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName;
             };
+
+            MatchContainer.style = `
+                height: 600px;
+                width: 350px;
+                color: rgb(255, 255, 255);
+                background-color: rgba(3, 3, 3, 0.7);
+                position: relative;
+                display: flex;
+                border-radius: 5px;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-content: center;
+                justify-content: flex-start;
+                align-items: center;
+            `;
 
             console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
         };
@@ -151,7 +171,7 @@
     </div>
 
     <div class="match-setup" bind:this={matchSetupContainer}>
-        <div class="match-setup-title" style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match Setup</div>
+        <div class="match-setup-title" bind:this={windowTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match Setup</div>
         <div class="team-names-field" bind:this={teamNameContainer}>
             <div class="team-one-prompt-box">
                 <input class="team-name-input" placeholder="First Team Name?" type="text" minlength="4" maxlength="12" bind:value={teamOneName}>
@@ -192,17 +212,21 @@
         <div class="proceed-box" bind:this={proceedButtonBox}>
             <input class="button-proceed-box" type="button" value="Proceed" bind:this={buttonProceed} on:click={ProceedButton}>
         </div>
-
     </div>
 
-
-    <div class="math-container">
+    <div class="match-container" bind:this={MatchContainer} style="display:none">
+        <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
         <div class="batting-scorecard">
             <div class="batting-team-name">
-                <!-- {} -->
+                Now Batting {battingTeamName}
+            </div>
+
+            <div class="batting-team-scorebox">
+
             </div>
         </div>
-    </div>
+     </div>
+
 </div>
 
 
@@ -220,6 +244,7 @@
         height: 100%;
         width: 100%;
     }
+
     .match-setup{
         height: 300px;
         width: 350px;
@@ -284,6 +309,29 @@
 
     .button-team-toss-decision:active{
         scale: 0.98;
+    }
+
+    .batting-team-name{
+        font-family: Outfit;
+        font-size: 1.2rem;
+        padding-top: 10px;
+        font-weight: 500;
+        user-select: none;
+        text-align: center;
+        color: rgb(255 255 255);
+        margin-bottom: 5px;
+    }
+
+    .batting-team-scorebox{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        width: 320px;
+        border-radius: 5px;
+        background-color: #ffffff4d;
     }
 /*     .overs-toss-field{
         display: flex;
