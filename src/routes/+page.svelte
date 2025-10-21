@@ -8,6 +8,7 @@
     let tossDecisionContainer;
     let proceedButtonBox;
     let buttonProceed;
+    let buttonSubmit;
     let matchTitle;
     let windowTitle;
 
@@ -18,6 +19,7 @@
     let teamTwoTossButton;
     let batButton;
     let bowlButton;
+    let isBlurred = $state(false);
 
 
     let tossWinTeamDecision;
@@ -27,7 +29,8 @@
     let bowlingTeamName = $state('');
 
     let teamOneName = $state('');
-    let teamTwoName =  $state('');
+    let teamTwoName = $state('');
+    let BatterInfoInput = $state('');
     let oversPerInnings = $state('1');
     let teamOnePlayers = $state([]);
     let teamTwoPlayers = $state([]);
@@ -109,6 +112,11 @@
         };
     };
 
+
+    function SubmitButton() {
+
+    };
+
     function intiateToss() {
         if (!alreadyFlipped) {
             alreadyFlipped = true;
@@ -163,16 +171,16 @@
     };
 
     function BatsmanButton(p1, p2) {
-        
+        isBlurred = true;
 
     };
 
     function BowlerButton(p1, p2) {
-
+        isBlurred = true;
     };
 
     function RunsButton(p1, p2) {
-
+        isBlurred = true;
     };
 </script>
 
@@ -229,7 +237,7 @@
         </div>
     </div>
 
-    <div class="match-container" bind:this={MatchContainer} style="display:none">
+    <div class="match-container" class:blurred={isBlurred} bind:this={MatchContainer} style="display:none">
         <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
         <div class="batting-scorecard">
             <div class="batting-team-name">
@@ -251,6 +259,15 @@
             </div>
         </div>
 
+
+        <div class="info-input-container">
+            <div class="batter-info-box" >
+                <input class="batter-info-input" placeholder="Batsman name?" type="text" minlength="4" maxlength="10" bind:value={BatterInfoInput}> 
+            </div>
+
+            <input class="button-submit-box" type="button" value="Thik Aseh!" bind:this={buttonSubmit} on:click={SubmitButton}>
+        </div>
+
         <input class="button-batsman-modifier" type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
         <input class="button-bowler-modifier" type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
         <input class="button-run-modifier" type="button" value="Add Runs" bind:this={buttonRunsModifier} on:click={RunsButton}>
@@ -259,6 +276,10 @@
 
 
 <style>
+    .blurred{
+        filter: blur(3px);
+    }
+
     .big-brother{
         display: flex;
         align-content: center;
@@ -330,6 +351,10 @@
         position: absolute;
     }
 
+    .button-batsman-modifier:active{
+        scale: 0.98;
+    }
+
     .button-bowler-modifier{
         height: 30px;
         width: 150px;
@@ -346,6 +371,10 @@
         position: absolute;
     }
 
+    .button-bowler-modifier:active{
+        scale: 0.98;
+    }
+
     .button-run-modifier{
         height: 30px;
         width: 150px;
@@ -360,6 +389,10 @@
         outline: 0;
         top: 540px;
         position: absolute;
+    }
+
+    .button-run-modifier:active{
+        scale: 0.98;
     }
     
     .button-proceed-box{
