@@ -11,6 +11,9 @@
     let matchTitle;
     let windowTitle;
 
+    let buttonBatsmanModifier;
+    let buttonRunsModifier;
+    let buttonBowlerModifier;
     let teamOneTossButton;
     let teamTwoTossButton;
     let batButton;
@@ -159,6 +162,18 @@
         
     };
 
+    function BatsmanButton(p1, p2) {
+        
+
+    };
+
+    function BowlerButton(p1, p2) {
+
+    };
+
+    function RunsButton(p1, p2) {
+
+    };
 </script>
 
 <div class="big-brother" transition:fade>
@@ -222,11 +237,24 @@
             </div>
 
             <div class="batting-team-scorebox">
-
+                
             </div>
         </div>
-     </div>
+        
+        <div class="bowling-scorecard">
+            <div class="bowling-team-name">
+                Now Bowling {bowlingTeamName}
+            </div>
 
+            <div class="bowling-team-scorebox">
+                
+            </div>
+        </div>
+
+        <input class="button-batsman-modifier" type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
+        <input class="button-bowler-modifier" type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
+        <input class="button-run-modifier" type="button" value="Add Runs" bind:this={buttonRunsModifier} on:click={RunsButton}>
+    </div>
 </div>
 
 
@@ -285,6 +313,45 @@
         margin-top: 230px;
         position: absolute;
     }
+
+    .button-batsman-modifier{
+        height: 20px;
+        width: 150px;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 1.6rem;
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+        position:absolute;
+    }
+
+    .button-bowler-modifier{
+        height: 20px;
+        width: 150px;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 1.6rem;
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+        position:absolute;
+    }
+
+    .button-run-modifier{
+        height: 20px;
+        width: 150px;
+        color:rgba(0, 0, 0, 0.8);
+        font-family: Outfit; 
+        font-size: 1.6rem;
+        font-weight: 600;
+        border-radius: 5px;
+        border:0;
+        outline:0;
+        position:absolute;
+    }
     
     .button-proceed-box{
         height: 50px;
@@ -329,6 +396,31 @@
         justify-content: center;
         align-items: center;
         height: 150px;
+        max-height: 150px;
+        width: 320px;
+        border-radius: 5px;
+        background-color: #ffffff4d;
+    }
+
+    .bowling-team-name{
+        font-family: Outfit;
+        font-size: 1.2rem;
+        padding-top: 10px;
+        font-weight: 500;
+        user-select: none;
+        text-align: center;
+        color: rgb(255 255 255);
+        margin-bottom: 5px;
+    }
+
+    .bowling-team-scorebox{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        max-height: 150px;
         width: 320px;
         border-radius: 5px;
         background-color: #ffffff4d;
