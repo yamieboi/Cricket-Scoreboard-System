@@ -315,42 +315,51 @@
     }
 
     .button-batsman-modifier{
-        height: 20px;
+        height: 30px;
         width: 150px;
-        color:rgba(0, 0, 0, 0.8);
-        font-family: Outfit; 
-        font-size: 1.6rem;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1.2rem;
+        text-align: center;
         font-weight: 600;
         border-radius: 5px;
-        border:0;
-        outline:0;
-        position:absolute;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        top: 460px;
+        position: absolute;
     }
 
     .button-bowler-modifier{
-        height: 20px;
+        height: 30px;
         width: 150px;
-        color:rgba(0, 0, 0, 0.8);
-        font-family: Outfit; 
-        font-size: 1.6rem;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1.2rem;
+        text-align: center;
         font-weight: 600;
         border-radius: 5px;
-        border:0;
-        outline:0;
-        position:absolute;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        top: 500px;
+        position: absolute;
     }
 
     .button-run-modifier{
-        height: 20px;
+        height: 30px;
         width: 150px;
-        color:rgba(0, 0, 0, 0.8);
-        font-family: Outfit; 
-        font-size: 1.6rem;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1.2rem;
+        text-align: center;
         font-weight: 600;
         border-radius: 5px;
-        border:0;
-        outline:0;
-        position:absolute;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        top: 540px;
+        position: absolute;
     }
     
     .button-proceed-box{
