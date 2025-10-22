@@ -17,6 +17,10 @@
     let buttonBowlerModifier;
     let teamOneTossButton;
     let teamTwoTossButton;
+    let infoInputContainer;
+    let batterInfoBox;
+    let BattingTeamScorebox;
+    let bowlerInfoBox;
     let batButton;
     let bowlButton;
     let isBlurred = $state(false);
@@ -31,6 +35,7 @@
     let teamOneName = $state('');
     let teamTwoName = $state('');
     let BatterInfoInput = $state('');
+    let BowlerInfoInput = $state('');
     let oversPerInnings = $state('1');
     let teamOnePlayers = $state([]);
     let teamTwoPlayers = $state([]);
@@ -112,11 +117,6 @@
         };
     };
 
-
-    function SubmitButton() {
-
-    };
-
     function intiateToss() {
         if (!alreadyFlipped) {
             alreadyFlipped = true;
@@ -170,17 +170,58 @@
         
     };
 
+    let openedInputBox = false;
+
     function BatsmanButton(p1, p2) {
+        if (openedInputBox) {
+            return;
+        }
+
         isBlurred = true;
+        openedInputBox = 'batsmanName';
+        infoInputContainer.style.display = "flex";
+        batterInfoBox.style.display = 'block';
 
     };
 
     function BowlerButton(p1, p2) {
+        if (openedInputBox) {
+            return;
+        }
+
         isBlurred = true;
+        openedInputBox = 'bowlerName';
+        infoInputContainer.style.display = "flex";
+        bowlerInfoBox.style.display = 'block';
     };
 
     function RunsButton(p1, p2) {
+        if (openedInputBox) {
+            return;
+        }
+
         isBlurred = true;
+        openedInputBox = 'Runs';
+    };
+
+    function SubmitButton() {
+        isBlurred = false;
+        
+
+        infoInputContainer.style.display = "none";
+        batterInfoBox.style.display = 'none';
+        bowlerInfoBox.style.display = 'none';
+
+        if (openedInputBox == 'batsmanName') {
+            let batsmanTobeAdded = BatterInfoInput;
+            let newHTML = BattingTeamScorebox.innerHTML + `<div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; background-color: #ffffff75; border-radius: 3px;">`+ batsmanTobeAdded + `</div>`
+
+            BattingTeamScorebox.innerHTML = newHTML;
+            
+            BatterInfoInput = '';
+            openedInputBox = false;
+            return;
+        };
     };
 </script>
 
@@ -237,19 +278,18 @@
         </div>
     </div>
 
-    <div class="match-container" class:blurred={isBlurred} bind:this={MatchContainer} style="display:none">
+    <div class="match-container" bind:this={MatchContainer} style="display:none">
         <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
-        <div class="batting-scorecard">
+        <div class="batting-scorecard" class:blurred={isBlurred}>
             <div class="batting-team-name">
                 Now Batting {battingTeamName}
             </div>
 
-            <div class="batting-team-scorebox">
-                
+            <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
             </div>
         </div>
         
-        <div class="bowling-scorecard">
+        <div class="bowling-scorecard" class:blurred={isBlurred}>
             <div class="bowling-team-name">
                 Now Bowling {bowlingTeamName}
             </div>
@@ -260,25 +300,48 @@
         </div>
 
 
-        <div class="info-input-container">
-            <div class="batter-info-box" >
-                <input class="batter-info-input" placeholder="Batsman name?" type="text" minlength="4" maxlength="10" bind:value={BatterInfoInput}> 
+        <div class="info-input-container" style="display:none" bind:this={infoInputContainer}>
+            <div class="batter-info-box" style="display:none" bind:this={batterInfoBox}>
+                <input class="batter-info-input" placeholder="Ke Namtese?" type="text" minlength="4" maxlength="10" bind:value={BatterInfoInput}> 
+            </div>
+
+            <div class="bowler-info-box" style="display:none" bind:this={bowlerInfoBox}>
+                <input class="bowler-info-input" placeholder="Ke Dheelabe?" type="text" minlength="4" maxlength="10" bind:value={BowlerInfoInput}> 
             </div>
 
             <input class="button-submit-box" type="button" value="Thik Aseh!" bind:this={buttonSubmit} on:click={SubmitButton}>
         </div>
 
-        <input class="button-batsman-modifier" type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
-        <input class="button-bowler-modifier" type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
-        <input class="button-run-modifier" type="button" value="Add Runs" bind:this={buttonRunsModifier} on:click={RunsButton}>
+        <input class="button-batsman-modifier" class:blurred={isBlurred} type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
+        <input class="button-bowler-modifier"class:blurred={isBlurred}  type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
+        <input class="button-run-modifier" class:blurred={isBlurred} type="button" value="Add Runs" bind:this={buttonRunsModifier} on:click={RunsButton}>
     </div>
 </div>
 
 
 <style>
+    ::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
     .blurred{
         filter: blur(3px);
     }
+
 
     .big-brother{
         display: flex;
@@ -307,6 +370,23 @@
         align-content: center;
         justify-content: flex-start;
         align-items: center;
+    }
+
+    .info-input-container{
+        height: 100px;
+        width: 200px;
+        background-color: #ffffff75;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        border-radius: 5px;
+        align-items: center;
+        z-index: 500;
+        top: 40%;
+        gap: 20px;
+        position: absolute;
     }
 
     .team-one-prompt-box{
@@ -375,6 +455,10 @@
         scale: 0.98;
     }
 
+    .button-submit-box:active{
+        scale: 0.98;
+    }
+
     .button-run-modifier{
         height: 30px;
         width: 150px;
@@ -435,13 +519,14 @@
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         height: 150px;
         max-height: 150px;
         width: 320px;
         border-radius: 5px;
         background-color: #ffffff4d;
+        overflow-y: scroll;
     }
 
     .bowling-team-name{
