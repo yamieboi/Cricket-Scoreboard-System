@@ -110,6 +110,7 @@
                 flex-wrap: nowrap;
                 align-content: center;
                 justify-content: flex-start;
+                user-select: none;
                 align-items: center;
             `;
 
@@ -214,7 +215,10 @@
 
         if (openedInputBox == 'batsmanName') {
             let batsmanTobeAdded = BatterInfoInput;
-            let newHTML = BattingTeamScorebox.innerHTML + `<div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; background-color: #ffffff75; border-radius: 3px;">`+ batsmanTobeAdded + `</div>`
+            let newHTML = BattingTeamScorebox.innerHTML + `
+            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; background-color: #ffffff75; border-radius: 3px;">
+                <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 500;">` + batsmanTobeAdded + `</div>
+            </div>`
 
             BattingTeamScorebox.innerHTML = newHTML;
             
@@ -320,24 +324,27 @@
 
 
 <style>
+
     ::-webkit-scrollbar {
         width: 4px;
     }
 
     /* Track */
     ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #ffffff00;
+        border-radius: 1px;
     }
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
-        background: #888;
+        background: #88888800;
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #ffffff00;
     }
+
     .blurred{
         filter: blur(3px);
     }
