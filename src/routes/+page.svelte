@@ -114,6 +114,21 @@
                 align-items: center;
             `;
 
+
+            matchData.battingTeamName = {
+                isBatting: true,
+                isBowling: false,
+                battingData: {},
+                bowlingData: {}
+            };
+
+            matchData.bowlingTeamName = {
+                isBatting: false,
+                isBowling: true,
+                battingData: {},
+                bowlingData: {}
+            }
+
             console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
         };
     };
@@ -215,6 +230,18 @@
 
         if (openedInputBox == 'batsmanName') {
             let batsmanTobeAdded = BatterInfoInput;
+
+            if (matchData.battingTeamName.battingData[batsmanTobeAdded]) {
+                openedInputBox = false;
+                return;
+            };
+
+            matchData.battingTeamName.battingData[batsmanTobeAdded] = {
+                runs: 0,
+                ballsFaced: 0,
+                foursHit: 0,
+                sixesHit: 0
+            };
             let newHTML = BattingTeamScorebox.innerHTML + `
             <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; justify-content: flex-start; align-content: center; align-items: center;">
                 <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
