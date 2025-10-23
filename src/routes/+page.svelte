@@ -216,8 +216,12 @@
         if (openedInputBox == 'batsmanName') {
             let batsmanTobeAdded = BatterInfoInput;
             let newHTML = BattingTeamScorebox.innerHTML + `
-            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; background-color: #ffffff75; border-radius: 3px;">
-                <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 500;">` + batsmanTobeAdded + `</div>
+            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; justify-content: flex-start; align-content: center; align-items: center;">
+                <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
+                <div class="runs-scored" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
+                <div class="balls-faced" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
+                <div class="fours-hit" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
+                <div class="sixes-hit" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
             </div>`
 
             BattingTeamScorebox.innerHTML = newHTML;
@@ -226,6 +230,8 @@
             openedInputBox = false;
             return;
         };
+
+        openedInputBox = false;
     };
 </script>
 
