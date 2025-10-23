@@ -242,14 +242,32 @@
                 foursHit: 0,
                 sixesHit: 0
             };
-            
-            let batsmanDataTemp = matchData.battingTeamName.battingData[batsmanTobeAdded]
-            
+
             BatterInfoInput = '';
             openedInputBox = false;
             return;
         };
 
+
+        if (openedInputBox == 'bowlerName') {
+            let bowlerTobeAdded = BowlerInfoInput;
+
+            if (matchData.bowlingTeamName.bowlingData[bowlerTobeAdded]) {
+                openedInputBox = false;
+                return;
+            };
+
+            matchData.bowlingTeamName.bowlingData[bowlerTobeAdded] = {
+                runs: 0,
+                ballsFaced: 0,
+                foursHit: 0,
+                sixesHit: 0
+            };
+            
+            BowlerInfoInput = '';
+            openedInputBox = false;
+            return;
+        };
         openedInputBox = false;
     };
 </script>
@@ -338,7 +356,20 @@
             </div>
 
             <div class="bowling-team-scorebox">
-                
+                {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
+                    {#each Object.entries(matchData.bowlingTeamName.bowlingData) as [name, stats]}
+                        <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="bowler-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{name}</div>
+                            <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
+                                <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
+                                <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
+                                <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
+                                <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                            </div>
+
+                        </div>
+                    {/each}
+                {/if}
             </div>
         </div>
 
@@ -591,13 +622,15 @@
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         height: 150px;
         max-height: 150px;
         width: 320px;
         border-radius: 5px;
         background-color: #ffffff4d;
+        padding-bottom: 10px;
+        overflow-y: scroll;
     }
 /*     .overs-toss-field{
         display: flex;
