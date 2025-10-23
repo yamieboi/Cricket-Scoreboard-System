@@ -44,7 +44,7 @@
     let alreadyFlipped = false;
     let teamNamesEntered = false;
 
-    let matchData = {}
+    let matchData = $state({})
     let teamOneBatting = {}
     let teamTwoBatting = {}
 
@@ -242,16 +242,8 @@
                 foursHit: 0,
                 sixesHit: 0
             };
-            let newHTML = BattingTeamScorebox.innerHTML + `
-            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; justify-content: flex-start; align-content: center; align-items: center;">
-                <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
-                <div class="runs-scored" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
-                <div class="balls-faced" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
-                <div class="fours-hit" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
-                <div class="sixes-hit" style="color: rgba(0, 0, 0, 0.8); margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">` + batsmanTobeAdded + `</div>
-            </div>`
-
-            BattingTeamScorebox.innerHTML = newHTML;
+            
+            let batsmanDataTemp = matchData.battingTeamName.battingData[batsmanTobeAdded]
             
             BatterInfoInput = '';
             openedInputBox = false;
@@ -323,6 +315,20 @@
             </div>
 
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
+                {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
+                    {#each Object.entries(matchData.battingTeamName.battingData) as [name, stats]}
+                        <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{name}</div>
+                            <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
+                                <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
+                                <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
+                                <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
+                                <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                            </div>
+
+                        </div>
+                    {/each}
+                {/if}
             </div>
         </div>
         
@@ -339,11 +345,11 @@
 
         <div class="info-input-container" style="display:none" bind:this={infoInputContainer}>
             <div class="batter-info-box" style="display:none" bind:this={batterInfoBox}>
-                <input class="batter-info-input" placeholder="Ke Namtese?" type="text" minlength="4" maxlength="10" bind:value={BatterInfoInput}> 
+                <input class="batter-info-input" placeholder="Ke Namtese?" type="text" minlength="4" maxlength="8" bind:value={BatterInfoInput}> 
             </div>
 
             <div class="bowler-info-box" style="display:none" bind:this={bowlerInfoBox}>
-                <input class="bowler-info-input" placeholder="Ke Dheelabe?" type="text" minlength="4" maxlength="10" bind:value={BowlerInfoInput}> 
+                <input class="bowler-info-input" placeholder="Ke Dheelabe?" type="text" minlength="4" maxlength="8" bind:value={BowlerInfoInput}> 
             </div>
 
             <input class="button-submit-box" type="button" value="Thik Aseh!" bind:this={buttonSubmit} on:click={SubmitButton}>
@@ -566,6 +572,7 @@
         width: 320px;
         border-radius: 5px;
         background-color: #ffffff4d;
+        padding-bottom: 10px;
         overflow-y: scroll;
     }
 
