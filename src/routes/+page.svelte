@@ -114,7 +114,6 @@
                 align-items: center;
             `;
 
-
             matchData.battingTeamName = {
                 isBatting: true,
                 isBowling: false,
@@ -220,6 +219,30 @@
         openedInputBox = 'Runs';
     };
 
+    function CreateActivePlayer(p1) {
+        if (p1 == 'batting') {
+            for (let name in matchData.battingTeamName.battingData) {
+                if ((matchData.battingTeamName.activeBatsman == null) || (matchData.battingTeamName.activeBatsman == false)) {
+                    let newName = matchData.battingTeamName.battingData[name].name + '*'
+
+                    matchData.battingTeamName.activeBatsman = true;
+                    matchData.battingTeamName.battingData[name].name = newName
+                }
+            }
+        };
+
+        if (p1 == 'bowling') {
+            for (let name in matchData.bowlingTeamName.bowlingData) {
+                if ((matchData.bowlingTeamName.activeBowler == null) || (matchData.bowlingTeamName.activeBowler == false)) {
+                    let newName = matchData.bowlingTeamName.bowlingData[name].name + '*'
+
+                    matchData.bowlingTeamName.activeBowler = true;
+                    matchData.bowlingTeamName.bowlingData[name].name = newName
+                }
+            }
+        };
+    };
+
     function SubmitButton() {
         isBlurred = false;
         
@@ -228,20 +251,31 @@
         batterInfoBox.style.display = 'none';
         bowlerInfoBox.style.display = 'none';
 
-        if (openedInputBox == 'batsmanName') {
+        if (openedInputBox == 'batsmanName' && !(BatterInfoInput == '')) {
             let batsmanTobeAdded = BatterInfoInput;
 
-            if (matchData.battingTeamName.battingData[batsmanTobeAdded]) {
+            if ((matchData.battingTeamName.battingData[batsmanTobeAdded]) || (Object.keys(matchData.battingTeamName.battingData).length == 11)) {
                 openedInputBox = false;
                 return;
             };
 
             matchData.battingTeamName.battingData[batsmanTobeAdded] = {
+                name: batsmanTobeAdded,
                 runs: 0,
                 ballsFaced: 0,
                 foursHit: 0,
                 sixesHit: 0
             };
+            
+
+
+
+            console.log(matchData.battingTeamName.activeBatsman);
+            setTimeout(function () {
+                if ((Object.keys(matchData.battingTeamName.battingData).length > 1)) {
+                    CreateActivePlayer('batting');
+                };
+            }, 1000)
 
             BatterInfoInput = '';
             openedInputBox = false;
@@ -249,20 +283,28 @@
         };
 
 
-        if (openedInputBox == 'bowlerName') {
+        if (openedInputBox == 'bowlerName' && !(BowlerInfoInput == '')) {
             let bowlerTobeAdded = BowlerInfoInput;
 
-            if (matchData.bowlingTeamName.bowlingData[bowlerTobeAdded]) {
+            if ((matchData.bowlingTeamName.bowlingData[bowlerTobeAdded]) || (Object.keys(matchData.bowlingTeamName.bowlingData).length == 11)) {
                 openedInputBox = false;
                 return;
             };
 
             matchData.bowlingTeamName.bowlingData[bowlerTobeAdded] = {
+                name: bowlerTobeAdded,
                 runs: 0,
                 ballsFaced: 0,
                 foursHit: 0,
                 sixesHit: 0
             };
+
+            setTimeout(function () {
+                if ((Object.keys(matchData.bowlingTeamName.bowlingData).length > 1)) {
+                    CreateActivePlayer('bowling');
+                };
+            }, 1000)
+
             
             BowlerInfoInput = '';
             openedInputBox = false;
@@ -270,6 +312,8 @@
         };
         openedInputBox = false;
     };
+
+
 </script>
 
 <div class="big-brother" transition:fade>
@@ -335,16 +379,18 @@
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
                     {#each Object.entries(matchData.battingTeamName.battingData) as [name, stats]}
-                        <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
-                            <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{name}</div>
-                            <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
-                                <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
-                                <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
-                                <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
-                                <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
-                            </div>
+                        {#if name && stats}
+                            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                                <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
+                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
+                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
+                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
+                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                                </div>
 
-                        </div>
+                            </div>
+                        {/if}
                     {/each}
                 {/if}
             </div>
@@ -358,16 +404,18 @@
             <div class="bowling-team-scorebox">
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
                     {#each Object.entries(matchData.bowlingTeamName.bowlingData) as [name, stats]}
-                        <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
-                            <div class="bowler-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{name}</div>
-                            <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
-                                <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
-                                <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
-                                <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
-                                <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
-                            </div>
+                        {#if !(name == '') && stats}
+                            <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                                <div class="bowler-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
+                                <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
+                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
+                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
+                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                                </div>
 
-                        </div>
+                            </div>
+                        {/if}
                     {/each}
                 {/if}
             </div>
