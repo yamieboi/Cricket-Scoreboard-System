@@ -13,7 +13,7 @@
     let windowTitle;
 
     let buttonBatsmanModifier;
-    let buttonRunsModifier;
+    let buttonBallsModifier;
     let buttonBowlerModifier;
     let teamOneTossButton;
     let teamTwoTossButton;
@@ -210,7 +210,7 @@
         bowlerInfoBox.style.display = 'block';
     };
 
-    function RunsButton(p1, p2) {
+    function AddBallButton(p1, p2) {
         if (openedInputBox) {
             return;
         }
@@ -436,7 +436,9 @@
 
         <input class="button-batsman-modifier" class:blurred={isBlurred} type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
         <input class="button-bowler-modifier"class:blurred={isBlurred}  type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
-        <input class="button-run-modifier" class:blurred={isBlurred} type="button" value="Add Runs" bind:this={buttonRunsModifier} on:click={RunsButton}>
+        <input class="button-ball-modifier" class:blurred={isBlurred} type="button" value="Add Ball" bind:this={buttonBallsModifier} on:click={AddBallButton}>
+        <input class="button-swap-batter-modifier" class:blurred={isBlurred} type="button" value="Swap Batsman" on:click={SwapBatsmanButton}>
+        <input class="button-swap-bowler-modifier" class:blurred={isBlurred} type="button" value="Swap Bowler" on:click={SwapBowlerButton}>
     </div>
 </div>
 
@@ -542,17 +544,18 @@
 
     .button-batsman-modifier{
         height: 30px;
-        width: 150px;
+        width: 120px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
-        font-size: 1.2rem;
+        font-size: 1rem;
         text-align: center;
         font-weight: 600;
         border-radius: 5px;
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 460px;
+        top: 500px;
+        right: 220px;
         position: absolute;
     }
 
@@ -562,10 +565,10 @@
 
     .button-bowler-modifier{
         height: 30px;
-        width: 150px;
+        width: 120px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
-        font-size: 1.2rem;
+        font-size: 1rem;
         text-align: center;
         font-weight: 600;
         border-radius: 5px;
@@ -573,6 +576,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 500px;
+        left: 220px;
         position: absolute;
     }
 
@@ -584,12 +588,33 @@
         scale: 0.98;
     }
 
-    .button-run-modifier{
+    .button-ball-modifier{
         height: 30px;
-        width: 150px;
+        width: 120px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
-        font-size: 1.2rem;
+        font-size: 1rem;
+        text-align: center;
+        font-weight: 600;
+        border-radius: 5px;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        top: 460px;
+        /* right: 220px; */
+        position: absolute;
+    }
+
+    .button-ball-modifier:active{
+        scale: 0.98;
+    }
+
+    .button-swap-batter-modifier{
+        height: 30px;
+        width: 120px;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1rem;
         text-align: center;
         font-weight: 600;
         border-radius: 5px;
@@ -597,10 +622,32 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 540px;
+        right: 220px;
         position: absolute;
     }
 
-    .button-run-modifier:active{
+    .button-swap-batter-modifier:active{
+        scale: 0.98;
+    }
+
+    .button-swap-bowler-modifier{
+        height: 30px;
+        width: 120px;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1rem;
+        text-align: center;
+        font-weight: 600;
+        border-radius: 5px;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        left: 220px;
+        top: 540px;
+        position: absolute;
+    }
+
+    .button-swap-bowler-modifier:active{
         scale: 0.98;
     }
     
