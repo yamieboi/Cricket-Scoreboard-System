@@ -554,7 +554,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 500px;
+        top: 460px;
         right: 220px;
         position: absolute;
     }
@@ -575,7 +575,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 500px;
+        top: 460px;
         left: 220px;
         position: absolute;
     }
@@ -600,7 +600,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 460px;
+        top: 555px;
         /* right: 220px; */
         position: absolute;
     }
@@ -621,7 +621,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 540px;
+        top: 505px;
         right: 220px;
         position: absolute;
     }
@@ -643,7 +643,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         left: 220px;
-        top: 540px;
+        top: 505px;
         position: absolute;
     }
 
