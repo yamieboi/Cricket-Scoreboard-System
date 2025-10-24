@@ -555,7 +555,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 460px;
-        right: 220px;
+        right: 215px;
         position: absolute;
     }
 
@@ -576,7 +576,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 460px;
-        left: 220px;
+        left: 215px;
         position: absolute;
     }
 
@@ -589,8 +589,8 @@
     }
 
     .button-ball-modifier{
-        height: 30px;
-        width: 120px;
+        height: 40px;
+        width: 320px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
         font-size: 1rem;
@@ -600,7 +600,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 555px;
+        top: 550px;
         /* right: 220px; */
         position: absolute;
     }
@@ -622,7 +622,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 505px;
-        right: 220px;
+        right: 215px;
         position: absolute;
     }
 
@@ -642,7 +642,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        left: 220px;
+        left: 215px;
         top: 505px;
         position: absolute;
     }
