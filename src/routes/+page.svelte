@@ -18,6 +18,7 @@
     let teamOneTossButton;
     let teamTwoTossButton;
     let infoInputContainer;
+    let ballInputContainer;
     let batterInfoBox;
     let BattingTeamScorebox;
     let bowlerInfoBox;
@@ -217,6 +218,7 @@
 
         isBlurred = true;
         openedInputBox = 'Runs';
+        ballInputContainer.style.display = "flex";
     };
 
     function CreateActivePlayer(p1) {
@@ -311,6 +313,10 @@
             return;
         };
         openedInputBox = false;
+    };
+
+    function AddBallConfirmButton(p1, p2) {
+
     };
 
 
@@ -434,6 +440,24 @@
             <input class="button-submit-box" type="button" value="Thik Aseh!" bind:this={buttonSubmit} on:click={SubmitButton}>
         </div>
 
+        <div class="ball-input-container" style="display:none" bind:this={ballInputContainer}>
+            <div class="ball-input-button-container" style="display: flex; flex-direction: row; flex-wrap: wrap; align-content: center; justify-content: center; gap: 5px; align-items: center;">
+                <input class="button-add-ball" type="button" value="0" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="1" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="2" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="3" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="4" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="6" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="Wide" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="No Ball" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="Byes" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="Leg Byes" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" value="Wicket" on:click={AddBallConfirmButton}>    
+            </div>
+       
+            <input class="button-add-ball" type="button" value="Proceed!" on:click={AddBallConfirmButton}>
+        </div>
+
         <input class="button-batsman-modifier" class:blurred={isBlurred} type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
         <input class="button-bowler-modifier"class:blurred={isBlurred}  type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
         <input class="button-ball-modifier" class:blurred={isBlurred} type="button" value="Add Ball" bind:this={buttonBallsModifier} on:click={AddBallButton}>
@@ -502,6 +526,23 @@
     .info-input-container{
         height: 100px;
         width: 200px;
+        background-color: #ffffff75;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        border-radius: 5px;
+        align-items: center;
+        z-index: 500;
+        top: 40%;
+        gap: 20px;
+        position: absolute;
+    }
+
+    .ball-input-container{
+        height: 200px;
+        width: 280px;
         background-color: #ffffff75;
         display: flex;
         flex-direction: column;
@@ -585,6 +626,10 @@
     }
 
     .button-submit-box:active{
+        scale: 0.98;
+    }
+
+    .button-add-ball:active{
         scale: 0.98;
     }
 
