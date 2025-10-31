@@ -441,18 +441,18 @@
         </div>
 
         <div class="ball-input-container" style="display:none" bind:this={ballInputContainer}>
-            <div class="ball-input-button-container" style="display: flex; flex-direction: row; flex-wrap: wrap; align-content: center; justify-content: center; gap: 5px; align-items: center;">
-                <input class="button-add-ball" type="button" value="0" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="1" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="2" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="3" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="4" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="6" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="Wide" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="No Ball" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="Byes" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="Leg Byes" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" value="Wicket" on:click={AddBallConfirmButton}>    
+            <div class="ball-input-button-container" style="display: flex; height: 140px; width: 100%; flex-direction: row; flex-wrap: wrap; align-content: center; justify-content: center; gap: 5px; align-items: center;">
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="0" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="1" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="2" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="3" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#c9ffd4;" value="4" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#c9ffd4" value="6" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Wide" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="No Ball" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Byes" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Leg Byes" on:click={AddBallConfirmButton}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Wicket" on:click={AddBallConfirmButton}>    
             </div>
        
             <input class="button-add-ball" type="button" value="Proceed!" on:click={AddBallConfirmButton}>
