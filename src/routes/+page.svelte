@@ -26,6 +26,20 @@
     let bowlButton;
     let isBlurred = $state(false);
 
+    
+    let ZeroRunsButton;
+    let OneRunsButton;
+    let TwoRunsButton;
+    let ThreeRunsButton;
+    let FourRunsButton;
+    let FiveRunsButton;
+    let SixRunsButton;
+    let WideRunsButton;
+    let NoBallButton;
+    let ByeRunsButton;
+    let LegByeRunsButton;
+    let WicketsButton;
+
 
     let tossWinTeamDecision;
     let tossWinTeam;
@@ -128,6 +142,10 @@
                 battingData: {},
                 bowlingData: {}
             }
+
+            matchData.currentOver = [];
+            matchData.selectedOptionsForBall = [];
+            matchData.selectedExclusiveOptions = false;
 
             console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
         };
@@ -316,9 +334,23 @@
     };
 
     function AddBallConfirmButton(p1, p2) {
-
+        isBlurred = false;
+        openedInputBox = false;
+        ballInputContainer.style.display = "none";
     };
 
+    function addBallEvent(p1, p2) {
+        console.log(p1, p2, ZeroRunsButton);
+
+        if (p1 == 'runs') {
+            if (p2 == 0) {
+                let button = ZeroRunsButton;
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('zeroRuns')
+                return;
+            }
+        }
+    };
 
 </script>
 
@@ -442,17 +474,18 @@
 
         <div class="ball-input-container" style="display:none" bind:this={ballInputContainer}>
             <div class="ball-input-button-container" style="display: flex; height: 140px; width: 100%; flex-direction: row; flex-wrap: wrap; align-content: center; justify-content: center; gap: 5px; align-items: center;">
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="0" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="1" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="2" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="3" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#c9ffd4;" value="4" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#c9ffd4" value="6" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Wide" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="No Ball" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Byes" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Leg Byes" on:click={AddBallConfirmButton}>
-                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" value="Wicket" on:click={AddBallConfirmButton}>    
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={ZeroRunsButton} value="0" on:click={a => addBallEvent("runs", 0)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={OneRunsButton} value="1" on:click={a => addBallEvent("runs", 1)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={TwoRunsButton} value="2" on:click={a => addBallEvent("runs", 2)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={ThreeRunsButton} value="3" on:click={a => addBallEvent("runs", 3)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={FourRunsButton}  value="4" on:click={a => addBallEvent("runs", 4)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={FiveRunsButton} value="5" on:click={a => addBallEvent("runs", 5)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={SixRunsButton} value="6" on:click={a => addBallEvent("runs", 6)}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={WideRunsButton} value="Wide" on:click={a => addBallEvent("runs", "wide")}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#f56464;" bind:this={NoBallButton} value="No Ball" on:click={a => addBallEvent("runs", 'noball')}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={ByeRunsButton} value="Byes" on:click={a => addBallEvent("runs", 'byes')}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0;" bind:this={LegByeRunsButton} value="Leg Byes" on:click={a => addBallEvent("runs", 'legbyes')}>
+                <input class="button-add-ball" type="button" style="height: 30px; width: 80px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; font-weight: 600; border-radius: 5px; border: 0; outline: 0; background-color:#f56464;" bind:this={WicketsButton} value="Wicket" on:click={a => addBallEvent("wicket")}>    
             </div>
        
             <input class="button-add-ball" type="button" value="Proceed!" on:click={AddBallConfirmButton}>
