@@ -345,10 +345,116 @@
         if (p1 == 'runs') {
             if (p2 == 0) {
                 let button = ZeroRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('zeroRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    matchData.selectedExclusiveOptions = false;
+                    return;
+                }
+
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('zeroRuns')
+                matchData.selectedOptionsForBall.push('zeroRuns');
+                matchData.selectedExclusiveOptions = true;
                 return;
-            }
+            };
+
+            if (p2 == 1 && !(matchData.selectedExclusiveOptions)) {
+                let button = OneRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('oneRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('oneRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 2 && !(matchData.selectedExclusiveOptions)) {
+                let button = TwoRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('twoRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('twoRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 3 && !(matchData.selectedExclusiveOptions)) {
+                let button = ThreeRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('threeRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('threeRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 4 && !(matchData.selectedExclusiveOptions)) {
+                let button = FourRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('fourRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('fourRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 5 && !(matchData.selectedExclusiveOptions)) {
+                let button = FiveRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('fiveRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('fiveRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 6 && !(matchData.selectedExclusiveOptions)) {
+                let button = SixRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('sixRuns')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('sixRuns');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
         }
     };
 
