@@ -342,21 +342,17 @@
         console.log(p1, p2)
         if (p1 == 'add') {
             let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
-            let stats = matchData.battingTeamName.battingData[currentActiveBatsman];
 
             matchData.battingTeamName.battingData[currentActiveBatsman].runs += p2
-
-            console.log(currentActiveBatsman, p2)
         }
     };
 
     function ProcessBowlerStats(p1, p2) {
+        console.log(p1, p2)
         if (p1 == 'add') {
-            let currentActiveBowler = matchData.battingTeamName.activeBowler;
-            let stats = matchData.bowlingTeamName.bowlingData[currentActiveBowler];
-            let currentRuns = matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs
+            let currentActiveBowler = matchData.bowlingTeamName.activeBowler;
             
-            matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs = (currentRuns + p2)
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs += p2;
         }
     };
 
@@ -373,8 +369,9 @@
         
         matchData.selectedOptionsForBall.forEach(function(item, index) {
             console.log('1', item, index)
-            if ((Number.isInteger(item))) { 
-
+            console.log()
+            if (!((typeof item) == 'string')) { 
+                print('helloooooooooooooooo', Number.isInteger(item))
                 totalRunsThisBall = (totalRunsThisBall + item);
                 ProcessBatsmanStats('add', item);
                 ProcessBowlerStats('add', item);
@@ -383,24 +380,24 @@
 
             if (item == 'wide') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
-                ProcessBowlerStats('add', item);
+                ProcessBowlerStats('add', 1);
             }
 
             if (item == 'byes') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
-                ProcessBatsmanStats('add', item);
-                ProcessBowlerStats('add', item);
+                ProcessBatsmanStats('add', 1);
+                ProcessBowlerStats('add', 1);
             }
 
             if (item == 'legbyes') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
-                ProcessBatsmanStats('add', item);
-                ProcessBowlerStats('add', item);
+                ProcessBatsmanStats('add', 1);
+                ProcessBowlerStats('add', 1);
             }
 
             if (item == 'noball') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
-                ProcessBowlerStats('add', item);
+                ProcessBowlerStats('add', 1);
             }
 
         });
