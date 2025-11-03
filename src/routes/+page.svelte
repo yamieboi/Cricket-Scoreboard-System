@@ -145,6 +145,11 @@
 
             matchData.currentOver = [];
             matchData.selectedOptionsForBall = [];
+            matchData.ballCount = 0;
+            matchData.runCount = 0;
+            matchData.currentOverNumber = 0;
+            matchData.oversData = {};
+            matchData.maxBallCount = (oversPerInnings * 6);
             matchData.selectedExclusiveOptions = false;
 
             console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
@@ -245,7 +250,7 @@
                 if ((matchData.battingTeamName.activeBatsman == null) || (matchData.battingTeamName.activeBatsman == false)) {
                     let newName = matchData.battingTeamName.battingData[name].name + '*'
 
-                    matchData.battingTeamName.activeBatsman = true;
+                    matchData.battingTeamName.activeBatsman = name;
                     matchData.battingTeamName.battingData[name].name = newName
                 }
             }
@@ -256,7 +261,7 @@
                 if ((matchData.bowlingTeamName.activeBowler == null) || (matchData.bowlingTeamName.activeBowler == false)) {
                     let newName = matchData.bowlingTeamName.bowlingData[name].name + '*'
 
-                    matchData.bowlingTeamName.activeBowler = true;
+                    matchData.bowlingTeamName.activeBowler = name;
                     matchData.bowlingTeamName.bowlingData[name].name = newName
                 }
             }
@@ -292,7 +297,7 @@
 
             console.log(matchData.battingTeamName.activeBatsman);
             setTimeout(function () {
-                if ((Object.keys(matchData.battingTeamName.battingData).length > 1)) {
+                if ((Object.keys(matchData.battingTeamName.battingData).length > 0)) {
                     CreateActivePlayer('batting');
                 };
             }, 1000)
@@ -320,7 +325,7 @@
             };
 
             setTimeout(function () {
-                if ((Object.keys(matchData.bowlingTeamName.bowlingData).length > 1)) {
+                if ((Object.keys(matchData.bowlingTeamName.bowlingData).length > 0)) {
                     CreateActivePlayer('bowling');
                 };
             }, 1000)
@@ -333,19 +338,130 @@
         openedInputBox = false;
     };
 
+    function ProcessBatsmanStats(p1, p2) {
+        console.log(p1, p2)
+        if (p1 == 'add') {
+            let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
+            let stats = matchData.battingTeamName.battingData[currentActiveBatsman];
+
+            matchData.battingTeamName.battingData[currentActiveBatsman].runs += p2
+
+            console.log(currentActiveBatsman, p2)
+        }
+    };
+
+    function ProcessBowlerStats(p1, p2) {
+        if (p1 == 'add') {
+            let currentActiveBowler = matchData.battingTeamName.activeBowler;
+            let stats = matchData.bowlingTeamName.bowlingData[currentActiveBowler];
+            let currentRuns = matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs
+            
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs = (currentRuns + p2)
+        }
+    };
+
     function AddBallConfirmButton(p1, p2) {
+        if (matchData.selectedOptionsForBall.length === 0) {
+            return;
+        };
+
+        let totalRunsThisBall = 0
+
         isBlurred = false;
         openedInputBox = false;
         ballInputContainer.style.display = "none";
+        
+        matchData.selectedOptionsForBall.forEach(function(item, index) {
+            console.log('1', item, index)
+            if ((Number.isInteger(item))) { 
+
+                totalRunsThisBall = (totalRunsThisBall + item);
+                ProcessBatsmanStats('add', item);
+                ProcessBowlerStats('add', item);
+                console.log('2', totalRunsThisBall, index)
+            };
+
+            if (item == 'wide') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBowlerStats('add', item);
+            }
+
+            if (item == 'byes') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', item);
+                ProcessBowlerStats('add', item);
+            }
+
+            if (item == 'legbyes') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', item);
+                ProcessBowlerStats('add', item);
+            }
+
+            if (item == 'noball') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBowlerStats('add', item);
+            }
+
+        });
+
+        matchData.ballCount = (matchData.ballCount + 1);
+        matchData.runCount = (matchData.runCount + totalRunsThisBall);
+        matchData.currentOver.push(matchData.selectedOptionsForBall);
+
+        if ((matchData.ballCount % 6) == 0) {
+            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
+            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            matchData.currentOver = [];
+        };
+
+        matchData.selectedOptionsForBall = [];
+        console.log(matchData);
+        addBallEvent('clear');
     };
 
     function addBallEvent(p1, p2) {
         console.log(p1, p2, ZeroRunsButton);
 
+
+        if (p1 == 'clear') {
+            WicketsButton.style.backgroundColor = '#f56464';
+            NoBallButton.style.backgroundColor = '#f56464';
+            ZeroRunsButton.style.backgroundColor = '';
+            OneRunsButton.style.backgroundColor = '';
+            TwoRunsButton.style.backgroundColor = '';
+            ThreeRunsButton.style.backgroundColor = '';
+            FourRunsButton.style.backgroundColor = '';
+            FiveRunsButton.style.backgroundColor = '';
+            SixRunsButton.style.backgroundColor = '';
+            ByeRunsButton.style.backgroundColor = '';
+            LegByeRunsButton.style.backgroundColor = '';
+            WideRunsButton.style.backgroundColor = '';
+            matchData.selectedExclusiveOptions = false;
+            return;
+        };
+
+        if (p1 == 'wicket') {
+                let button = WicketsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('wicket')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '#f56464';
+                    matchData.selectedExclusiveOptions = false;
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('wicket');
+                matchData.selectedExclusiveOptions = true;
+            return;
+        };
+
         if (p1 == 'runs') {
             if (p2 == 0) {
                 let button = ZeroRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('zeroRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('0')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -355,14 +471,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('zeroRuns');
+                matchData.selectedOptionsForBall.push('0');
                 matchData.selectedExclusiveOptions = true;
                 return;
             };
 
             if (p2 == 1 && !(matchData.selectedExclusiveOptions)) {
                 let button = OneRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('oneRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('1')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -371,14 +487,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('oneRuns');
+                matchData.selectedOptionsForBall.push('1');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 2 && !(matchData.selectedExclusiveOptions)) {
                 let button = TwoRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('twoRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('2')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -387,14 +503,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('twoRuns');
+                matchData.selectedOptionsForBall.push('2');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 3 && !(matchData.selectedExclusiveOptions)) {
                 let button = ThreeRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('threeRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('3')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -403,14 +519,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('threeRuns');
+                matchData.selectedOptionsForBall.push('3');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 4 && !(matchData.selectedExclusiveOptions)) {
                 let button = FourRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('fourRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('4')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -419,14 +535,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('fourRuns');
+                matchData.selectedOptionsForBall.push('4');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 5 && !(matchData.selectedExclusiveOptions)) {
                 let button = FiveRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('fiveRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('5')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -435,14 +551,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('fiveRuns');
+                matchData.selectedOptionsForBall.push('5');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 6 && !(matchData.selectedExclusiveOptions)) {
                 let button = SixRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('sixRuns')
+                let index = matchData.selectedOptionsForBall.indexOf('6')
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -451,7 +567,72 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('sixRuns');
+                matchData.selectedOptionsForBall.push('6');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 'wide' && !(matchData.selectedExclusiveOptions)) {
+                let button = WideRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('wide')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('wide');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+
+            if (p2 == 'byes' && !(matchData.selectedExclusiveOptions)) {
+                let button = ByeRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('byes')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('byes');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 'legbyes' && !(matchData.selectedExclusiveOptions)) {
+                let button = LegByeRunsButton;
+                let index = matchData.selectedOptionsForBall.indexOf('legbyes')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('legbyes');
+                matchData.selectedExclusiveOptions = false;
+                return;
+            };
+
+            if (p2 == 'noball' && !(matchData.selectedExclusiveOptions)) {
+                let button = NoBallButton;
+                let index = matchData.selectedOptionsForBall.indexOf('noball')
+
+                if (!(index == -1)) {
+                    matchData.selectedOptionsForBall.splice(index, 1);
+                    button.style.backgroundColor = '#f56464';
+                    return;
+                }
+
+                button.style.backgroundColor = '#c9ffd4';
+                matchData.selectedOptionsForBall.push('noball');
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
