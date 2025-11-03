@@ -264,6 +264,16 @@
                     matchData.bowlingTeamName.activeBowler = name;
                     matchData.bowlingTeamName.bowlingData[name].name = newName
                 }
+
+                if ((matchData.bowlingTeamName.activeBowler) && (matchData.bowlingTeamName.bowlingData.length > 1)) {
+                    if (!(matchData.bowlingTeamName.activeBowler == name)) {
+                        let newName = matchData.bowlingTeamName.bowlingData[name].name + '*'
+
+                        matchData.bowlingTeamName.previousBowler = matchData.bowlingTeamName.activeBowler;
+                        matchData.bowlingTeamName.activeBowler = name;
+                        matchData.bowlingTeamName.bowlingData[name].name = newName
+                    };
+                }
             }
         };
     };
@@ -319,9 +329,9 @@
             matchData.bowlingTeamName.bowlingData[bowlerTobeAdded] = {
                 name: bowlerTobeAdded,
                 runs: 0,
-                ballsFaced: 0,
-                foursHit: 0,
-                sixesHit: 0
+                oversBowled: 0,
+                economy: 0,
+                wickets: 0
             };
 
             setTimeout(function () {
@@ -339,21 +349,35 @@
     };
 
     function ProcessBatsmanStats(p1, p2) {
+        let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
         console.log(p1, p2)
         if (p1 == 'add') {
-            let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
-
             matchData.battingTeamName.battingData[currentActiveBatsman].runs += p2
         }
+
+        if (p1 == 'addBall'){
+            matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
+        }
+
+        if (p1 == 'over') {
+
+        };
     };
 
     function ProcessBowlerStats(p1, p2) {
+        let currentActiveBowler = matchData.bowlingTeamName.activeBowler;
         console.log(p1, p2)
         if (p1 == 'add') {
-            let currentActiveBowler = matchData.bowlingTeamName.activeBowler;
-            
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs += p2;
-        }
+        };
+
+        if (p1 == 'over') {
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled += 1;
+
+            let economy = (matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs / matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled);
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].economy = parseFloat(economy.toFixed(2));
+            CreateActivePlayer('bowling');
+        };
     };
 
     function AddBallConfirmButton(p1, p2) {
@@ -361,7 +385,12 @@
             return;
         };
 
-        let totalRunsThisBall = 0
+        if ((matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
+            return;
+        };
+
+        let totalRunsThisBall = 0;
+        let countBall = true;
 
         isBlurred = false;
         openedInputBox = false;
@@ -369,9 +398,8 @@
         
         matchData.selectedOptionsForBall.forEach(function(item, index) {
             console.log('1', item, index)
-            console.log()
-            if (!((typeof item) == 'string')) { 
-                print('helloooooooooooooooo', Number.isInteger(item))
+            console.log((typeof item))
+            if (((typeof item) == 'number')) { 
                 totalRunsThisBall = (totalRunsThisBall + item);
                 ProcessBatsmanStats('add', item);
                 ProcessBowlerStats('add', item);
@@ -381,6 +409,7 @@
             if (item == 'wide') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
                 ProcessBowlerStats('add', 1);
+                countBall = false;
             }
 
             if (item == 'byes') {
@@ -397,16 +426,24 @@
 
             if (item == 'noball') {
                 totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', 1);
                 ProcessBowlerStats('add', 1);
+                countBall = false;
             }
 
         });
 
-        matchData.ballCount = (matchData.ballCount + 1);
+        if (countBall) {
+            matchData.ballCount = (matchData.ballCount + 1);
+            ProcessBatsmanStats('addBall');
+        };
+
         matchData.runCount = (matchData.runCount + totalRunsThisBall);
         matchData.currentOver.push(matchData.selectedOptionsForBall);
 
-        if ((matchData.ballCount % 6) == 0) {
+        if (countBall && (matchData.ballCount % 6) == 0) {
+            ProcessBowlerStats('over')
+            ProcessBatsmanStats('over')
             matchData.currentOverNumber = (matchData.currentOverNumber + 1);
             matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
             matchData.currentOver = [];
@@ -475,7 +512,7 @@
 
             if (p2 == 1 && !(matchData.selectedExclusiveOptions)) {
                 let button = OneRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('1')
+                let index = matchData.selectedOptionsForBall.indexOf(1)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -484,14 +521,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('1');
+                matchData.selectedOptionsForBall.push(1);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 2 && !(matchData.selectedExclusiveOptions)) {
                 let button = TwoRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('2')
+                let index = matchData.selectedOptionsForBall.indexOf(2)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -500,14 +537,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('2');
+                matchData.selectedOptionsForBall.push(2);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 3 && !(matchData.selectedExclusiveOptions)) {
                 let button = ThreeRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('3')
+                let index = matchData.selectedOptionsForBall.indexOf(3)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -516,14 +553,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('3');
+                matchData.selectedOptionsForBall.push(3);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 4 && !(matchData.selectedExclusiveOptions)) {
                 let button = FourRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('4')
+                let index = matchData.selectedOptionsForBall.indexOf(4)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -532,14 +569,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('4');
+                matchData.selectedOptionsForBall.push(4);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 5 && !(matchData.selectedExclusiveOptions)) {
                 let button = FiveRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('5')
+                let index = matchData.selectedOptionsForBall.indexOf(5)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -548,14 +585,14 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('5');
+                matchData.selectedOptionsForBall.push(5);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
 
             if (p2 == 6 && !(matchData.selectedExclusiveOptions)) {
                 let button = SixRunsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('6')
+                let index = matchData.selectedOptionsForBall.indexOf(6)
 
                 if (!(index == -1)) {
                     matchData.selectedOptionsForBall.splice(index, 1);
@@ -564,7 +601,7 @@
                 }
 
                 button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('6');
+                matchData.selectedOptionsForBall.push(6);
                 matchData.selectedExclusiveOptions = false;
                 return;
             };
@@ -702,13 +739,13 @@
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
                     {#each Object.entries(matchData.battingTeamName.battingData) as [name, stats]}
                         {#if name && stats}
-                            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: center; /* align-content: center; */ align-items: center;}">
                                 <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
-                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
-                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
-                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
-                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
-                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 10px; width: 170px; align-items: center;">
+                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.runs}</div>
+                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.ballsFaced}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.foursHit}</div>
+                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.sixesHit}</div>
                                 </div>
 
                             </div>
@@ -727,13 +764,13 @@
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
                     {#each Object.entries(matchData.bowlingTeamName.bowlingData) as [name, stats]}
                         {#if !(name == '') && stats}
-                            <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 45px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: center; /* align-content: center; */ align-items: center;}">
                                 <div class="bowler-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
-                                <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 40px; align-items: center;">
-                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.runs}</div>
-                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.ballsFaced}</div>
-                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.foursHit}</div>
-                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.sixesHit}</div>
+                                <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; gap: 10px; width: 170px; flex-direction: row; align-items: center;">
+                                    <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.oversBowled}</div>
+                                    <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.runs}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.economy}</div>
+                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.wickets}</div>
                                 </div>
 
                             </div>
