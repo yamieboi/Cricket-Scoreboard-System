@@ -239,6 +239,14 @@
             return;
         }
 
+        if ((matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
+            return;
+        };
+
+        if ((matchData.bowlingTeamName.bowlingData.length == 0) || (matchData.battingTeamName.battingData.length == 0)) {
+            return;
+        };
+
         isBlurred = true;
         openedInputBox = 'Runs';
         ballInputContainer.style.display = "flex";
@@ -382,10 +390,23 @@
 
     function AddBallConfirmButton(p1, p2) {
         if (matchData.selectedOptionsForBall.length === 0) {
+            isBlurred = false;
+            openedInputBox = false;
+            ballInputContainer.style.display = "none";
             return;
         };
 
         if ((matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
+            isBlurred = false;
+            openedInputBox = false;
+            ballInputContainer.style.display = "none";
+            return;
+        };
+
+        if ((matchData.bowlingTeamName.bowlingData.length == 0) || (matchData.battingTeamName.battingData.length == 0)) {
+            isBlurred = false;
+            openedInputBox = false;
+            ballInputContainer.style.display = "none";
             return;
         };
 
