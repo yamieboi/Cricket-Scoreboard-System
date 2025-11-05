@@ -742,10 +742,8 @@
             let newIndex = matchData.battingTeamName.activeBatsmanIndex + 1
 
             if (p2) {
-                console.log('index provideddddddddddddd', p2);
                 newIndex = p2;
-            }
-            console.log('new indexxxxx', newIndex);
+            };
             
             if ((newIndex > Object.keys(matchData.battingTeamName.battingData).length)) {
                 newIndex = 1;
@@ -758,8 +756,6 @@
                 SwapBatsmanButton(false, (newIndex+1))
                 return;
             };
-
-            console.log('moowwwwww', playerAtNewIndex)
 
             matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name = matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name.slice(0, -1);
 
