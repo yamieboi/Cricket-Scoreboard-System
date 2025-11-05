@@ -239,7 +239,7 @@
             return;
         }
 
-        if ((matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
+        if ((matchData.bowlingTeamName.previousBowler) && (matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
             return;
         };
 
@@ -260,6 +260,7 @@
 
                     matchData.battingTeamName.activeBatsman = name;
                     matchData.battingTeamName.battingData[name].name = newName
+                    matchData.battingTeamName.activeBatsmanIndex = matchData.battingTeamName.battingData[name].index
                 }
             }
         };
@@ -271,9 +272,10 @@
 
                     matchData.bowlingTeamName.activeBowler = name;
                     matchData.bowlingTeamName.bowlingData[name].name = newName
+                    matchData.bowlingTeamName.activeBowlerIndex = matchData.bowlingTeamName.bowlingData[name].index
                 }
 
-                if ((matchData.bowlingTeamName.activeBowler) && (matchData.bowlingTeamName.bowlingData.length > 1)) {
+/*                 if ((matchData.bowlingTeamName.activeBowler) && (matchData.bowlingTeamName.bowlingData.length > 1)) {
                     if (!(matchData.bowlingTeamName.activeBowler == name)) {
                         let newName = matchData.bowlingTeamName.bowlingData[name].name + '*'
 
@@ -281,7 +283,7 @@
                         matchData.bowlingTeamName.activeBowler = name;
                         matchData.bowlingTeamName.bowlingData[name].name = newName
                     };
-                }
+                } */
             }
         };
     };
@@ -306,8 +308,10 @@
                 name: batsmanTobeAdded,
                 runs: 0,
                 ballsFaced: 0,
+                isOut: false,
                 foursHit: 0,
-                sixesHit: 0
+                sixesHit: 0,
+                index: Object.keys(matchData.battingTeamName.battingData).length + 1
             };
             
 
@@ -339,7 +343,9 @@
                 runs: 0,
                 oversBowled: 0,
                 economy: 0,
-                wickets: 0
+                wickets: 0,
+                wicketsTaken: [],
+                index: Object.keys(matchData.bowlingTeamName.bowlingData).length + 1
             };
 
             setTimeout(function () {
@@ -367,8 +373,11 @@
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
         }
 
-        if (p1 == 'over') {
-
+        if (p1 == 'wicket') {
+            matchData.battingTeamName.battingData[currentActiveBatsman].isOut = true;
+            matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
+            matchData.battingTeamName.battingData[currentActiveBatsman].wicketTakenBy = p2;
+            SwapBatsmanButton()
         };
     };
 
@@ -380,11 +389,20 @@
         };
 
         if (p1 == 'over') {
+            if ((Object.keys(matchData.battingTeamName.battingData).length > 1)) {
+                matchData.bowlingTeamName.needToChangeBowler = true;
+            };
+
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled += 1;
 
             let economy = (matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs / matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled);
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].economy = parseFloat(economy.toFixed(2));
             CreateActivePlayer('bowling');
+        };
+
+        if (p1 == 'wicket') {
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].wicketsTaken.push(p2);
+            matchData.bowlingTeamName.bowlingData[currentActiveBowler].wickets += 1
         };
     };
 
@@ -393,13 +411,15 @@
             isBlurred = false;
             openedInputBox = false;
             ballInputContainer.style.display = "none";
+            addBallEvent('clear');
             return;
         };
 
-        if ((matchData.bowlingTeamName.activeBowler == matchData.bowlingTeamName.previousBowler)) {
+        if (matchData.bowlingTeamName.needToChangeBowler) {
             isBlurred = false;
             openedInputBox = false;
             ballInputContainer.style.display = "none";
+            addBallEvent('clear');
             return;
         };
 
@@ -407,6 +427,7 @@
             isBlurred = false;
             openedInputBox = false;
             ballInputContainer.style.display = "none";
+            addBallEvent('clear');
             return;
         };
 
@@ -449,6 +470,13 @@
                 totalRunsThisBall = (totalRunsThisBall + 1);
                 ProcessBatsmanStats('add', 1);
                 ProcessBowlerStats('add', 1);
+                countBall = false;
+            };
+
+            if (item == 'wicket') {
+                totalRunsThisBall = (totalRunsThisBall + 0);
+                ProcessBatsmanStats('wicket', matchData.bowlingTeamName.activeBowler);
+                ProcessBowlerStats('wicket', matchData.battingTeamName.activeBatsman);
                 countBall = false;
             }
 
@@ -497,19 +525,19 @@
         };
 
         if (p1 == 'wicket') {
-                let button = WicketsButton;
-                let index = matchData.selectedOptionsForBall.indexOf('wicket')
+            let button = WicketsButton;
+            let index = matchData.selectedOptionsForBall.indexOf('wicket')
 
-                if (!(index == -1)) {
-                    matchData.selectedOptionsForBall.splice(index, 1);
-                    button.style.backgroundColor = '#f56464';
-                    matchData.selectedExclusiveOptions = false;
-                    return;
-                }
+            if (!(index == -1)) {
+                matchData.selectedOptionsForBall.splice(index, 1);
+                button.style.backgroundColor = '#f56464';
+                matchData.selectedExclusiveOptions = false;
+                return;
+            }
 
-                button.style.backgroundColor = '#c9ffd4';
-                matchData.selectedOptionsForBall.push('wicket');
-                matchData.selectedExclusiveOptions = true;
+            button.style.backgroundColor = '#c9ffd4';
+            matchData.selectedOptionsForBall.push('wicket');
+            matchData.selectedExclusiveOptions = true;
             return;
         };
 
@@ -693,6 +721,78 @@
             };
         }
     };
+
+    function SwapBatsmanButton() {
+        if ((Object.keys(matchData.battingTeamName.battingData).length == 1)) {
+            return;
+        };
+
+        if (!(matchData.battingTeamName.activeBatsmanIndex == null)) {
+            let newIndex = matchData.battingTeamName.activeBatsmanIndex + 1
+
+            console.log('new indexxxxx', newIndex)
+            
+            if ((newIndex > Object.keys(matchData.battingTeamName.battingData).length)) {
+                newIndex = 1;
+            };
+
+            let playerAtNewIndex = PlayerAtIndex('batting', newIndex);
+
+            console.log('moowwwwww', playerAtNewIndex)
+
+            matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name = matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name.slice(0, -1);
+
+            let newName = matchData.battingTeamName.battingData[playerAtNewIndex].name + '*'
+
+            matchData.battingTeamName.activeBatsman = playerAtNewIndex;
+            matchData.battingTeamName.battingData[playerAtNewIndex].name = newName
+            matchData.battingTeamName.activeBatsmanIndex = matchData.battingTeamName.battingData[playerAtNewIndex].index
+        }
+    };
+
+    function PlayerAtIndex(p1, p2) {
+        if (p1 == 'batting') {
+            for (let name in matchData.battingTeamName.battingData) {
+                console.log(name, p2)
+                if ((matchData.battingTeamName.battingData[name].index == p2)) {
+                    return name;
+                };
+            };
+        };
+
+        if (p1 == 'bowling') {
+            for (let name in matchData.bowlingTeamName.bowlingData) {
+                if ((matchData.bowlingTeamName.bowlingData[name].index == p2)) {
+                    return name;
+                };
+            };
+        };
+    };
+
+    function SwapBowlerButton  () {
+        if ((Object.keys(matchData.bowlingTeamName.bowlingData).length == 1)) {
+            return;
+        };
+
+        if (!(matchData.bowlingTeamName.activeBowlerIndex == null)) {
+            let newIndex = (matchData.bowlingTeamName.activeBowlerIndex + 1)
+
+            matchData.bowlingTeamName.bowlingData[matchData.bowlingTeamName.activeBowler].name = matchData.bowlingTeamName.bowlingData[matchData.bowlingTeamName.activeBowler].name.slice(0, -1);
+            matchData.bowlingTeamName.previousBowler = matchData.bowlingTeamName.activeBowler;
+
+            if ((newIndex > Object.keys(matchData.bowlingTeamName.bowlingData).length)) {
+                newIndex = 1;
+            };
+
+            let playerAtNewIndex = PlayerAtIndex('bowling', newIndex);
+            let newName = matchData.bowlingTeamName.bowlingData[playerAtNewIndex].name + '*'
+
+            matchData.bowlingTeamName.activeBowler = playerAtNewIndex;
+            matchData.bowlingTeamName.needToChangeBowler = false;
+            matchData.bowlingTeamName.bowlingData[playerAtNewIndex].name = newName
+            matchData.bowlingTeamName.activeBowlerIndex = matchData.bowlingTeamName.bowlingData[playerAtNewIndex].index
+        }
+    }
 
 </script>
 
