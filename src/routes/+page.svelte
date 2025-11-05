@@ -133,14 +133,18 @@
                 isBatting: true,
                 isBowling: false,
                 battingData: {},
-                bowlingData: {}
+                bowlingData: {},
+                availableBowlers: [],
+                availableBatters: []
             };
 
             matchData.bowlingTeamName = {
                 isBatting: false,
                 isBowling: true,
                 battingData: {},
-                bowlingData: {}
+                bowlingData: {},
+                availableBowlers: [],
+                availableBatters: []
             }
 
             matchData.currentOver = [];
@@ -259,8 +263,9 @@
                     let newName = matchData.battingTeamName.battingData[name].name + '*'
 
                     matchData.battingTeamName.activeBatsman = name;
-                    matchData.battingTeamName.battingData[name].name = newName
-                    matchData.battingTeamName.activeBatsmanIndex = matchData.battingTeamName.battingData[name].index
+                    matchData.battingTeamName.battingData[name].name = newName;
+                    matchData.battingTeamName.activeBatsmanIndex = matchData.battingTeamName.battingData[name].index;
+                    matchData.battingTeamName.activeBatsmanArrayIndex = matchData.battingTeamName.battingData[name].arrayIndex;
                 }
             }
         };
@@ -271,8 +276,9 @@
                     let newName = matchData.bowlingTeamName.bowlingData[name].name + '*'
 
                     matchData.bowlingTeamName.activeBowler = name;
-                    matchData.bowlingTeamName.bowlingData[name].name = newName
-                    matchData.bowlingTeamName.activeBowlerIndex = matchData.bowlingTeamName.bowlingData[name].index
+                    matchData.bowlingTeamName.bowlingData[name].name = newName;
+                    matchData.bowlingTeamName.activeBowlerIndex = matchData.bowlingTeamName.bowlingData[name].index;
+                    matchData.bowlingTeamName.activeBowlerArrayIndex = matchData.bowlingTeamName.bowlingData[name].arrayIndex;
                 }
 
 /*                 if ((matchData.bowlingTeamName.activeBowler) && (matchData.bowlingTeamName.bowlingData.length > 1)) {
@@ -311,10 +317,11 @@
                 isOut: false,
                 foursHit: 0,
                 sixesHit: 0,
-                index: Object.keys(matchData.battingTeamName.battingData).length + 1
+                index: Object.keys(matchData.battingTeamName.battingData).length + 1,
+                arrayIndex: matchData.battingTeamName.availableBatters.length + 1
             };
             
-
+            matchData.battingTeamName.availableBatters.push(matchData.battingTeamName.battingData[batsmanTobeAdded].index);
 
 
             console.log(matchData.battingTeamName.activeBatsman);
@@ -345,8 +352,11 @@
                 economy: 0,
                 wickets: 0,
                 wicketsTaken: [],
-                index: Object.keys(matchData.bowlingTeamName.bowlingData).length + 1
+                index: Object.keys(matchData.bowlingTeamName.bowlingData).length + 1,
+                arrayIndex: matchData.bowlingTeamName.availableBowlers.length + 1
             };
+
+            matchData.bowlingTeamName.availableBowlers.push(matchData.bowlingTeamName.bowlingData[bowlerTobeAdded].index);
 
             setTimeout(function () {
                 if ((Object.keys(matchData.bowlingTeamName.bowlingData).length > 0)) {
@@ -377,6 +387,7 @@
             matchData.battingTeamName.battingData[currentActiveBatsman].isOut = true;
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
             matchData.battingTeamName.battingData[currentActiveBatsman].wicketTakenBy = p2;
+
             SwapBatsmanButton()
         };
     };
@@ -722,7 +733,7 @@
         }
     };
 
-    function SwapBatsmanButton() {
+    function SwapBatsmanButton(p1, p2) {
         if ((Object.keys(matchData.battingTeamName.battingData).length == 1)) {
             return;
         };
@@ -730,13 +741,23 @@
         if (!(matchData.battingTeamName.activeBatsmanIndex == null)) {
             let newIndex = matchData.battingTeamName.activeBatsmanIndex + 1
 
-            console.log('new indexxxxx', newIndex)
+            if (p2) {
+                console.log('index provideddddddddddddd', p2);
+                newIndex = p2;
+            }
+            console.log('new indexxxxx', newIndex);
             
             if ((newIndex > Object.keys(matchData.battingTeamName.battingData).length)) {
                 newIndex = 1;
             };
 
             let playerAtNewIndex = PlayerAtIndex('batting', newIndex);
+
+            if (matchData.battingTeamName.battingData[playerAtNewIndex].isOut == true) {
+                console.log('this player is out');
+                SwapBatsmanButton(false, (newIndex+1))
+                return;
+            };
 
             console.log('moowwwwww', playerAtNewIndex)
 
