@@ -377,6 +377,12 @@
         console.log(p1, p2)
         if (p1 == 'add') {
             matchData.battingTeamName.battingData[currentActiveBatsman].runs += p2
+
+            if (p2 == 4) {
+                matchData.battingTeamName.battingData[currentActiveBatsman].foursHit += 1
+            } else if (p2 == 6) {
+                matchData.battingTeamName.battingData[currentActiveBatsman].sixesHit += 1
+            };
         }
 
         if (p1 == 'addBall'){
