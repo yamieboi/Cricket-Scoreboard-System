@@ -135,7 +135,9 @@
                 battingData: {},
                 bowlingData: {},
                 availableBowlers: [],
-                availableBatters: []
+                availableBatters: [],
+                totalBatters: 0,
+                totalBowlers: 0
             };
 
             matchData.bowlingTeamName = {
@@ -144,7 +146,9 @@
                 battingData: {},
                 bowlingData: {},
                 availableBowlers: [],
-                availableBatters: []
+                availableBatters: [],
+                totalBatters: 0,
+                totalBowlers: 0
             }
 
             matchData.currentOver = [];
@@ -302,6 +306,16 @@
         batterInfoBox.style.display = 'none';
         bowlerInfoBox.style.display = 'none';
 
+        if (matchData.maxBallCount == matchData.ballCount) {
+            console.log('innings has ended, by ball count.')
+            return;
+        };
+
+        if ((matchData.battingTeamName.totalBatters < 1) && (matchData.ballCount > 0)) {
+            console.log('innings is over, by all out.')
+            return;
+        };
+
         if (openedInputBox == 'batsmanName' && !(BatterInfoInput == '')) {
             let batsmanTobeAdded = BatterInfoInput;
 
@@ -322,6 +336,7 @@
             };
             
             matchData.battingTeamName.availableBatters.push(matchData.battingTeamName.battingData[batsmanTobeAdded].index);
+            matchData.battingTeamName.totalBatters += 1
 
 
             console.log(matchData.battingTeamName.activeBatsman);
@@ -357,6 +372,7 @@
             };
 
             matchData.bowlingTeamName.availableBowlers.push(matchData.bowlingTeamName.bowlingData[bowlerTobeAdded].index);
+            matchData.bowlingTeamName.totalBowlers += 1
 
             setTimeout(function () {
                 if ((Object.keys(matchData.bowlingTeamName.bowlingData).length > 0)) {
@@ -394,6 +410,10 @@
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
             matchData.battingTeamName.battingData[currentActiveBatsman].wicketTakenBy = p2;
 
+            matchData.battingTeamName.availableBatters.splice(matchData.battingTeamName.battingData[currentActiveBatsman].arrayIndex, 1);
+            matchData.battingTeamName.totalBatters -= 1
+
+            console.log('remaining batters', matchData.battingTeamName.totalBatters)
             SwapBatsmanButton()
         };
     };
@@ -508,11 +528,15 @@
         matchData.currentOver.push(matchData.selectedOptionsForBall);
 
         if (countBall && (matchData.ballCount % 6) == 0) {
-            ProcessBowlerStats('over')
-            ProcessBatsmanStats('over')
+            ProcessBowlerStats('over');
+            ProcessBatsmanStats('over');
             matchData.currentOverNumber = (matchData.currentOverNumber + 1);
             matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
             matchData.currentOver = [];
+
+            if (matchData.maxBallCount == matchData.ballCount) {
+                console.log('innings has ended, by ball count.')
+            };
         };
 
         matchData.selectedOptionsForBall = [];
@@ -522,7 +546,6 @@
 
     function addBallEvent(p1, p2) {
         console.log(p1, p2, ZeroRunsButton);
-
 
         if (p1 == 'clear') {
             WicketsButton.style.backgroundColor = '#f56464';
@@ -538,6 +561,16 @@
             LegByeRunsButton.style.backgroundColor = '';
             WideRunsButton.style.backgroundColor = '';
             matchData.selectedExclusiveOptions = false;
+            return;
+        };
+
+        if ((matchData.battingTeamName.totalBatters < 1) && (matchData.ballCount > 0)) {
+            console.log('innings is over, by all out.')
+            return;
+        };
+
+        if (matchData.maxBallCount == matchData.ballCount) {
+            console.log('innings has ended, by ball count.')
             return;
         };
 
@@ -744,6 +777,23 @@
             return;
         };
 
+        if ((matchData.battingTeamName.totalBatters < 1) && !(matchData.battingTeamName.activeBatsman == null) && (matchData.ballCount > 0)) {
+            console.log('innings is over, by all out.')
+            matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name = matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name.slice(0, -1);
+            matchData.battingTeamName.activeBatsman = null;
+            return;
+        };
+
+        if (matchData.maxBallCount == matchData.ballCount) {
+            console.log('innings has ended, by ball count.')
+            return;
+        };
+
+        if ((matchData.battingTeamName.totalBatters < 1) && (matchData.ballCount > 0)) {
+            console.log('innings is over, by all out.')
+            return;
+        };
+
         if (!(matchData.battingTeamName.activeBatsmanIndex == null)) {
             let newIndex = matchData.battingTeamName.activeBatsmanIndex + 1
 
@@ -792,8 +842,18 @@
         };
     };
 
-    function SwapBowlerButton  () {
+    function SwapBowlerButton() {
         if ((Object.keys(matchData.bowlingTeamName.bowlingData).length == 1)) {
+            return;
+        };
+
+        if (matchData.maxBallCount == matchData.ballCount) {
+            console.log('innings has ended, by ball count.')
+            return;
+        };
+
+        if ((matchData.battingTeamName.totalBatters < 1) && (matchData.ballCount > 0)) {
+            console.log('innings is over, by all out.')
             return;
         };
 
