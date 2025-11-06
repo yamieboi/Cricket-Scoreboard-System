@@ -38,6 +38,7 @@
     let NoBallButton;
     let ByeRunsButton;
     let LegByeRunsButton;
+    let overallScoreCard;
     let WicketsButton;
 
     let firstInningsEnd = false;
@@ -130,6 +131,26 @@
                 align-items: center;
             `;
 
+            overallScoreCard.style = `
+                height: 50px;
+                width: 350px;
+                color: rgb(255, 255, 255);
+                background-color: rgba(3, 3, 3, 0.7);
+                position: relative;
+                display: flex;
+                border-radius: 5px;
+                flex-flow: column;
+                place-content: center flex-start;
+                user-select: none;
+                align-items: center;
+                margin-bottom: 5px;
+                flex-wrap: nowrap;
+                flex-direction: row;
+                align-content: center;
+                justify-content: flex-start;
+                
+            `;
+
             matchData.battingTeamName = {
                 isBatting: true,
                 isBowling: false,
@@ -156,9 +177,12 @@
             matchData.selectedOptionsForBall = [];
             matchData.ballCount = 0;
             matchData.runCount = 0;
+            matchData.totalWickets = 0;
             matchData.currentOverNumber = 0;
             matchData.oversData = {};
             matchData.maxBallCount = (oversPerInnings * 6);
+            matchData.oversCountFlt = 0;
+            matchData.oversCount = 0;
             matchData.selectedExclusiveOptions = false;
 
             console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
@@ -522,12 +546,19 @@
                 totalRunsThisBall = (totalRunsThisBall + 0);
                 ProcessBowlerStats('wicket', matchData.battingTeamName.activeBatsman);
                 ProcessBatsmanStats('wicket', matchData.bowlingTeamName.activeBowler);
+                matchData.totalWickets += 1;
             };
 
         });
 
         if (countBall) {
             matchData.ballCount = (matchData.ballCount + 1);
+            matchData.oversCountFlt += 0.1;
+
+            if (matchData.oversCountFlt > 0.5) {
+                matchData.oversCountFlt = 0.5;
+            };
+
             ProcessBatsmanStats('addBall');
         };
 
@@ -540,6 +571,10 @@
             matchData.currentOverNumber = (matchData.currentOverNumber + 1);
             matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
             matchData.currentOver = [];
+
+            matchData.oversCountFlt -= 0.5;
+
+            matchData.oversCount += 1;
 
             if (matchData.maxBallCount == matchData.ballCount) {
                 console.log('innings has ended, by ball count.')
@@ -910,7 +945,12 @@
                 index: Object.keys(matchData.battingTeamName.battingData).length + 1,
                 arrayIndex: matchData.battingTeamName.availableBatters.length + 1
             };
+
+            matchData.battingTeamName.availableBatters.push(matchData.battingTeamName.battingData[name].index);
+            matchData.battingTeamName.totalBatters += 1
         };
+
+        CreateActivePlayer('batting');
     };
 
     function makeBattersBowlers(p1) {
@@ -925,11 +965,23 @@
                 index: Object.keys(matchData.bowlingTeamName.bowlingData).length + 1,
                 arrayIndex: matchData.bowlingTeamName.availableBowlers.length + 1
             }; 
+
+
+            matchData.bowlingTeamName.availableBowlers.push(matchData.bowlingTeamName.bowlingData[name].index);
+            matchData.bowlingTeamName.totalBowlers += 1
         };
+
+        CreateActivePlayer('bowling');
     };
 
     function FirstInningsEnd() {
         let bowlingDataCopy = matchData.bowlingTeamName;
+
+        matchData.battingTeamName.runsScored = matchData.runCount;
+        matchData.battingTeamName.ballsFaced = matchData.ballCount;
+        matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
+        matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
+        matchData.battingTeamName.oversCount = matchData.oversCount; 
 
         setTimeout(() => {
             matchData.bowlingTeamName = matchData.battingTeamName;
@@ -939,6 +991,10 @@
             battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
 
             matchData.ballCount = 0;
+            matchData.runCount = 0;
+            matchData.totalWickets = 0;
+            matchData.oversCountFlt = 0;
+            matchData.oversCount = 0;
 
             firstInningsEnd = true;
 
@@ -948,16 +1004,18 @@
             makeBowlersBatters();
             makeBattersBowlers();
 
-/*             
-
-*/
-
             console.log('first innings end', matchData);
         }, 1000)
     };
 
     function SecondInningsEnd() {
         setTimeout(() => {
+            matchData.battingTeamName.runsScored = matchData.runCount;
+            matchData.battingTeamName.ballsFaced = matchData.ballCount;
+            matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
+            matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
+            matchData.battingTeamName.oversCount = matchData.oversCount; 
+
             MatchContainer.style.display = 'none'
             console.log('second innings end', matchData);
         }, 500)
@@ -1018,6 +1076,12 @@
         </div>
     </div>
 
+    <div class="overall-scorecard" bind:this={overallScoreCard} style="display:none">
+        <div class="batting-team-name-overall-score" style="font-family: Outfit; margin-left: 15px; width: 150px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{battingTeamName}</div>
+        <div class="batting-team-overall-score" style="font-family: Outfit; left: 220px; position: absolute; width: 50px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
+        <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.4rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
+    </div>
+
     <div class="match-container" bind:this={MatchContainer} style="display:none">
         <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
         <div class="batting-scorecard" class:blurred={isBlurred}>
@@ -1025,7 +1089,7 @@
                 Now Batting {battingTeamName}
             </div>
 
-            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: fixed; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 130px; word-spacing: 18px;">Runs  Balls  Fours  Sixes</div>
+            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: absolute; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 130px; word-spacing: 18px;">Runs  Balls  Fours  Sixes</div>
 
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
@@ -1052,7 +1116,7 @@
                 Now Bowling {bowlingTeamName}
             </div>
             
-            <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: fixed; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 125px; word-spacing: 5px;">Overs  Runs  Economy  Wickets</div>
+            <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: absolute; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 125px; word-spacing: 5px;">Overs  Runs  Economy  Wickets</div>
 
             <div class="bowling-team-scorebox">
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
