@@ -114,7 +114,7 @@
             };
 
             MatchContainer.style = `
-                height: 600px;
+                height: 650px;
                 width: 350px;
                 color: rgb(255, 255, 255);
                 background-color: rgba(3, 3, 3, 0.7);
@@ -879,6 +879,8 @@
                 Now Batting {battingTeamName}
             </div>
 
+            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: fixed; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 130px; word-spacing: 18px;">Runs  Balls  Fours  Sixes</div>
+
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
                     {#each Object.entries(matchData.battingTeamName.battingData) as [name, stats]}
@@ -903,6 +905,8 @@
             <div class="bowling-team-name">
                 Now Bowling {bowlingTeamName}
             </div>
+            
+            <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: fixed; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 125px; word-spacing: 5px;">Overs  Runs  Economy  Wickets</div>
 
             <div class="bowling-team-scorebox">
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
@@ -1093,7 +1097,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 460px;
+        top: 500px;
         right: 215px;
         position: absolute;
     }
@@ -1114,7 +1118,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 460px;
+        top: 500px;
         left: 215px;
         position: absolute;
     }
@@ -1143,7 +1147,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 550px;
+        top: 590px;
         /* right: 220px; */
         position: absolute;
     }
@@ -1164,7 +1168,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 505px;
+        top: 545px;
         right: 215px;
         position: absolute;
     }
@@ -1186,7 +1190,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         left: 215px;
-        top: 505px;
+        top: 545px;
         position: absolute;
     }
 
@@ -1221,6 +1225,7 @@
 
     .batting-team-name{
         font-family: Outfit;
+        padding-bottom: 5px;
         font-size: 1.2rem;
         padding-top: 10px;
         font-weight: 500;
@@ -1243,6 +1248,7 @@
         background-color: #ffffff4d;
         padding-bottom: 10px;
         overflow-y: scroll;
+        margin-top: 20px;
     }
 
     .bowling-team-name{
@@ -1252,6 +1258,7 @@
         font-weight: 500;
         user-select: none;
         text-align: center;
+        padding-bottom: 5px;
         color: rgb(255 255 255);
         margin-bottom: 5px;
     }
@@ -1269,6 +1276,7 @@
         background-color: #ffffff4d;
         padding-bottom: 10px;
         overflow-y: scroll;
+        margin-top: 20px;
     }
 /*     .overs-toss-field{
         display: flex;
