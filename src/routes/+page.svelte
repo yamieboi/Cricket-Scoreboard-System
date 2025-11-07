@@ -173,6 +173,7 @@
                 totalBowlers: 0
             }
 
+            matchData.winningCause = '';
             matchData.currentOver = [];
             matchData.selectedOptionsForBall = [];
             matchData.ballCount = 0;
@@ -564,6 +565,14 @@
 
         matchData.runCount = (matchData.runCount + totalRunsThisBall);
         matchData.currentOver.push(matchData.selectedOptionsForBall);
+
+        if ((matchData.target) && (matchData.runCount >= matchData.target)) {
+            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
+            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            matchData.currentOver = [];
+            console.log('match over, by target reached.')
+            SecondInningsEnd();
+        };
 
         if (countBall && (matchData.ballCount % 6) == 0) {
             ProcessBowlerStats('over');
@@ -1018,8 +1027,34 @@
             matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
             matchData.battingTeamName.oversCount = matchData.oversCount; 
 
+            let winningTeam;
+            let winningCause;
+
+            if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
+                winningTeam = battingTeamName;
+
+                winningCause = battingTeamName + ' won by ' + (((Object.keys(matchData.bowlingTeamName.bowlingData).length) == matchData.battingTeamName.totalBatters) ? matchData.battingTeamName.totalBatters : ((Object.keys(matchData.bowlingTeamName.bowlingData).length) - matchData.battingTeamName.totalBatters)) + ' wickets.'
+            } else if ((matchData.battingTeamName.runsScored < matchData.bowlingTeamName.runsScored)) {
+                winningTeam = bowlingTeamName;
+
+                let oversRemain = (oversPerInnings - matchData.battingTeamName.oversCount);
+                let oversRemainFlt = (0.6 - matchData.battingTeamName.oversCountFlt);
+                let oversRemainTotal = (oversRemain + oversRemainFlt).toFixed(1);
+
+                let final = (oversRemainTotal == 0.6) ? 'no' : oversRemainTotal
+
+                winningCause = bowlingTeamName + ' won by ' + (matchData.target - matchData.battingTeamName.runsScored) + ' runs.';
+            };
+
+
+            if ((matchData.battingTeamName.runsScored == matchData.bowlingTeamName.runsScored)) {
+                winningTeam = 'Match Draw';
+                winningCause = 'Match Draw';
+            };
+
+            matchData.winningCause = winningCause;
             MatchContainer.style.display = 'none'
-            console.log('second innings end', matchData);
+            console.log('second innings end', matchData, winningCause);
         }, 500)
     };
 
@@ -1079,7 +1114,7 @@
     </div>
 
     <div class="overall-scorecard" bind:this={overallScoreCard} style="display:none">
-        <div class="batting-team-name-overall-score" style="font-family: Outfit; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-left: 15px; min-width: 100px; max-width: 100px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{battingTeamName}</div>
+        <div class="batting-team-name-overall-score" style="font-family: Outfit; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-left: 15px; min-width: 100px; max-width: 100px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{(!(battingTeamName == null)) ? battingTeamName : matchData.winningCause}</div>
         <div class="target-set" style="font-family: Outfit; flex-grow: 0; position: absolute; flex-shrink: 0; left: 120px; width: 100px; text-align: center; font-size: 1.2rem; font-weight: 600;">{(matchData.target ? 'To Win ' + matchData.target : '')}</div>
         <div class="batting-team-overall-score" style="font-family: Outfit; left: 230px; position: absolute; width: 50px; text-align: center; font-size: 1.2rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
         <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.2rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
