@@ -173,7 +173,6 @@
                 totalBowlers: 0
             }
 
-            matchData.winningCause = '';
             matchData.currentOver = [];
             matchData.selectedOptionsForBall = [];
             matchData.ballCount = 0;
@@ -1052,7 +1051,9 @@
                 winningCause = 'Match Draw';
             };
 
-            matchData.winningCause = winningCause;
+
+
+            overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
             MatchContainer.style.display = 'none'
             console.log('second innings end', matchData, winningCause);
         }, 500)
@@ -1114,7 +1115,7 @@
     </div>
 
     <div class="overall-scorecard" bind:this={overallScoreCard} style="display:none">
-        <div class="batting-team-name-overall-score" style="font-family: Outfit; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-left: 15px; min-width: 100px; max-width: 100px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{(!(battingTeamName == null)) ? battingTeamName : matchData.winningCause}</div>
+        <div class="batting-team-name-overall-score" style="font-family: Outfit; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-left: 15px; min-width: 100px; max-width: 100px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{battingTeamName}</div>
         <div class="target-set" style="font-family: Outfit; flex-grow: 0; position: absolute; flex-shrink: 0; left: 120px; width: 100px; text-align: center; font-size: 1.2rem; font-weight: 600;">{(matchData.target ? 'To Win ' + matchData.target : '')}</div>
         <div class="batting-team-overall-score" style="font-family: Outfit; left: 230px; position: absolute; width: 50px; text-align: center; font-size: 1.2rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
         <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.2rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
