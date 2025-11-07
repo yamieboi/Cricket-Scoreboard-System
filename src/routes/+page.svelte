@@ -990,6 +990,8 @@
             bowlingTeamName = battingTeamName;
             battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
 
+            matchData.target = (matchData.runCount + 1);
+
             matchData.ballCount = 0;
             matchData.runCount = 0;
             matchData.totalWickets = 0;
@@ -1077,9 +1079,10 @@
     </div>
 
     <div class="overall-scorecard" bind:this={overallScoreCard} style="display:none">
-        <div class="batting-team-name-overall-score" style="font-family: Outfit; margin-left: 15px; width: 150px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{battingTeamName}</div>
-        <div class="batting-team-overall-score" style="font-family: Outfit; left: 220px; position: absolute; width: 50px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
-        <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.4rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
+        <div class="batting-team-name-overall-score" style="font-family: Outfit; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-left: 15px; min-width: 100px; max-width: 100px; text-align: center; font-size: 1.4rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{battingTeamName}</div>
+        <div class="target-set" style="font-family: Outfit; flex-grow: 0; position: absolute; flex-shrink: 0; left: 120px; width: 100px; text-align: center; font-size: 1.2rem; font-weight: 600;">{(matchData.target ? 'To Win ' + matchData.target : '')}</div>
+        <div class="batting-team-overall-score" style="font-family: Outfit; left: 230px; position: absolute; width: 50px; text-align: center; font-size: 1.2rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
+        <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.2rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
     </div>
 
     <div class="match-container" bind:this={MatchContainer} style="display:none">
