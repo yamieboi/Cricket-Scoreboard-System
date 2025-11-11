@@ -1219,6 +1219,8 @@
         <input class="button-swap-batter-modifier" class:blurred={isBlurred} type="button" value="Swap Batsman" on:click={SwapBatsmanButton}>
         <input class="button-swap-bowler-modifier" class:blurred={isBlurred} type="button" value="Swap Bowler" on:click={SwapBowlerButton}>
     </div>
+
+    <div style="color:rgba(0, 0, 0, 0.8); margin-top: 5px; font-size: 1.5rem; font-weight: bolder;">চির উন্নত মম শির!</div>
 </div>
 
 
