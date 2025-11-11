@@ -1131,19 +1131,20 @@
                 Now Batting {battingTeamName}
             </div>
 
-            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: absolute; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 140px; word-spacing: 12px;">Runs  Balls  Sixes  S/R</div>
+            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: absolute; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 104px; word-spacing: 20px;">Runs Balls 4s 6s S/R</div>
 
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
                     {#each Object.entries(matchData.battingTeamName.battingData) as [name, stats]}
                         {#if name && stats}
-                            <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="batsman-info" style="width: 310px; margin-top: 10px; margin-left: 5px; gap: 40px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; justify-content: flex-start; /* align-content: center; */ align-items: center;}">
                                 <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
-                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; width: 170px; align-items: center;">
+                                <div class="batsman-stats" style="display: flex; justify-content: center; gap: 2px; align-content: center; flex-wrap: nowrap; flex-direction: row; width: 170px; align-items: center;">
                                     <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.runs}</div>
                                     <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.ballsFaced}</div>
-                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.sixesHit}</div>
-                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.strikeRate}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.foursHit}</div>
+                                    <div class="sixes-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.sixesHit}</div>
+                                    <div class="strikerate-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.strikeRate}</div>
                                 </div>
 
                             </div>
@@ -1158,13 +1159,13 @@
                 Now Bowling {bowlingTeamName}
             </div>
             
-            <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: absolute; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 125px; word-spacing: 5px;">Overs  Runs  Economy  Wickets</div>
+            <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: absolute; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 115px; word-spacing: 10px;">Overs  Runs  Economy  Wickets</div>
 
             <div class="bowling-team-scorebox">
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
                     {#each Object.entries(matchData.bowlingTeamName.bowlingData) as [name, stats]}
                         {#if !(name == '') && stats}
-                            <div class="bowler-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: center; /* align-content: center; */ align-items: center;}">
+                            <div class="bowler-info" style="width: 310px; margin-left: 5px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: flex-start; /* align-content: center; */ align-items: center;}">
                                 <div class="bowler-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
                                 <div class="bowler-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; gap: 10px; width: 170px; flex-direction: row; align-items: center;">
                                     <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.oversBowled}</div>
