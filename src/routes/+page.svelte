@@ -355,6 +355,7 @@
                 ballsFaced: 0,
                 isOut: false,
                 foursHit: 0,
+                strikeRate: 0,
                 sixesHit: 0,
                 index: Object.keys(matchData.battingTeamName.battingData).length + 1,
                 arrayIndex: matchData.battingTeamName.availableBatters.length + 1
@@ -428,6 +429,7 @@
 
         if (p1 == 'addBall'){
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
+            matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = ((matchData.battingTeamName.battingData[currentActiveBatsman].runs / matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced) * 100).toFixed(1);
         }
 
         if (p1 == 'wicket') {
@@ -949,6 +951,7 @@
                 ballsFaced: 0,
                 isOut: false,
                 foursHit: 0,
+                strikeRate: 0,
                 sixesHit: 0,
                 index: Object.keys(matchData.battingTeamName.battingData).length + 1,
                 arrayIndex: matchData.battingTeamName.availableBatters.length + 1
@@ -1128,7 +1131,7 @@
                 Now Batting {battingTeamName}
             </div>
 
-            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: absolute; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 130px; word-spacing: 18px;">Runs  Balls  Fours  Sixes</div>
+            <div class="stats-describer" style="display: flex; flex-direction: row; flex-wrap: nowrap; margin-top: -5px; align-content: center; justify-content: center; align-items: center; position: absolute; font-family: Outfit; font-size: 0.8rem; /* z-index: 2; */ margin-left: 140px; word-spacing: 12px;">Runs  Balls  Sixes  S/R</div>
 
             <div class="batting-team-scorebox" bind:this={BattingTeamScorebox}>
                 {#if matchData && matchData.battingTeamName && matchData.battingTeamName.battingData}
@@ -1136,11 +1139,11 @@
                         {#if name && stats}
                             <div class="batsman-info" style="width: 300px; margin-top: 10px; height: 25px; min-height: 25px; display: flex; background-color: #ffffff75; border-radius: 3px; flex-wrap: nowrap; flex-direction: row; gap: 40px; justify-content: center; /* align-content: center; */ align-items: center;}">
                                 <div class="batsman-name" style="color: rgba(0, 0, 0, 0.8); width: 70px; margin-left: 5px; font-family: Outfit; font-size: 1rem; font-weight: 600;">{stats.name}</div>
-                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; gap: 10px; width: 170px; align-items: center;">
+                                <div class="batsman-stats" style="display: flex; justify-content: center; align-content: center; flex-wrap: nowrap; flex-direction: row; width: 170px; align-items: center;">
                                     <div class="runs-scored" style=" left: 100px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.runs}</div>
                                     <div class="balls-faced" style=" left: 140px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.ballsFaced}</div>
-                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.foursHit}</div>
-                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.sixesHit}</div>
+                                    <div class="fours-hit" style=" left: 160px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.sixesHit}</div>
+                                    <div class="sixes-hit" style=" left: 200px; color: rgba(0, 0, 0, 0.8); font-family: Outfit; font-size: 1rem; text-align: center; min-width: 40px; max-width: 40px; flex-shrink: 0; flex-grow: 0; font-weight: 600;">{stats.strikeRate}</div>
                                 </div>
 
                             </div>
