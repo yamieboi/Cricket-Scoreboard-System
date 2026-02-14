@@ -1022,11 +1022,11 @@
             // Optional: Add text along with the image
             if (!(p2 == 'result')) {
                 formData.append('payload_json', JSON.stringify({
-                    content: `🏆 **Cricket Score Update**\nInnings: ${innings}\nScorecard Of **${p2}** team. \nBowling ${JSON.stringify(matchData.bowlingTeamName)} \nBatting ${JSON.stringify(matchData.battingTeamName)}` 
+                    content: `🏆 **Cricket Score Update**\n**${battingTeamName} VS. ${bowlingTeamName}**\nInnings: **${innings}**\nScorecard Of **${p2}** team.` 
                 }));
             } else {
                 formData.append('payload_json', JSON.stringify({
-                    content: `🏆 **Cricket Score Update**\n**Match Result**. \nBowling ${JSON.stringify(matchData.bowlingTeamName)} \nBatting ${JSON.stringify(matchData.battingTeamName)}`
+                    content: `🏆 **Cricket Score Update**\n**${bowlingTeamName} VS. ${battingTeamName}**\n**Match Result**. \nBowling Team ${JSON.stringify(matchData.bowlingTeamName.battingData)} ${JSON.stringify(matchData.bowlingTeamName.bowlingData)} \nBatting Team ${JSON.stringify(matchData.battingTeamName.battingData)} ${JSON.stringify(matchData.battingTeamName.bowlingData)}`
                 }));  
             }
 
@@ -1052,6 +1052,7 @@
     };
 
     function FirstInningsEnd() {
+        ballInputContainer.style.display = 'none';
         setTimeout(() => {
             let bowlingDataCopy = matchData.bowlingTeamName;
 
@@ -1122,6 +1123,7 @@
     };
 
     function SecondInningsEnd() {
+        ballInputContainer.style.display = 'none';
         setTimeout(() => {
             setTimeout(() => {
                 matchData.battingTeamName.runsScored = matchData.runCount;
