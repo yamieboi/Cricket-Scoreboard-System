@@ -998,8 +998,8 @@
     let captureArea = DisplayElements; // Reference to the DOM element
     let screenshotUrl = '';
 
-    async function takeScreenshot(innings) {
-        html2canvas(document.querySelector(".big-brother")).then(canvas => {
+    async function takeScreenshot(innings, p2) {
+        html2canvas(document.querySelector(".big-brother")).then(async canvas => {
             const ctx = canvas.getContext("2d");
             const image = canvas.toDataURL("image/png", 1.0);
             screenshotUrl = image;
@@ -1008,8 +1008,48 @@
             link.download = innings + 'innings' +  window.crypto.getRandomValues(new Uint32Array(1)) + '.png';
             link.href = image;
             link.click();
+
+            // 1. Convert Base64 DataURL to a Blob (Binary Large Object)
+            const res = await fetch(image);
+            const blob = await res.blob();
+
+            // 2. Prepare the Multipart Form Data
+            const formData = new FormData();
+            
+            // 'file' is the key Discord looks for to display an image
+            formData.append('file', blob, `scoreboard-${innings}.png`);
+            
+            // Optional: Add text along with the image
+            if (!(p2 == 'result')) {
+                formData.append('payload_json', JSON.stringify({
+                    content: `🏆 **Cricket Score Update**\nInnings: ${innings}\nScorecard Of **${p2}** team. \nBowling ${JSON.stringify(matchData.bowlingTeamName)} \nBatting ${JSON.stringify(matchData.battingTeamName)}` 
+                }));
+            } else {
+                formData.append('payload_json', JSON.stringify({
+                    content: `🏆 **Cricket Score Update**\n**Match Result**. \nBowling ${JSON.stringify(matchData.bowlingTeamName)} \nBatting ${JSON.stringify(matchData.battingTeamName)}`
+                }));  
+            }
+
+
+            // 3. Execute the Upload
+            try {
+                const discordResponse = await fetch('https://discord.com/api/webhooks/1472260202781999258/tCXt000_BpVCelt1jpDqwwhkNnBOzOod8O3wyYEsJ_QkaougI4F0_hg05M3PCcFBEhac', {
+                    method: 'POST',
+                    body: formData 
+                    // Note: DO NOT set headers: { 'Content-Type': 'application/json' }
+                    // The browser will automatically set the correct boundary for FormData
+                });
+
+                if (discordResponse.ok) {
+                    console.log("Upload successful!");
+                } else {
+                    console.error("Upload failed:", await discordResponse.text());
+                }
+            } catch (error) {
+                console.error("Error sending to Discord:", error);
+            }
         });
-    }
+    };
 
     function FirstInningsEnd() {
         setTimeout(() => {
@@ -1030,14 +1070,14 @@
             BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            takeScreenshot('first');
+            takeScreenshot('first', 'batting');
 
             BattingScorecardModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'block';
             BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            takeScreenshot('first');
+            takeScreenshot('first', 'bowling');
 
             setTimeout(() => {
                 SwapBowlerModifier.style.display = 'block';
@@ -1099,14 +1139,14 @@
                 BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                takeScreenshot('second');
+                takeScreenshot('second', 'batting');
 
                 BattingScorecardModifier.style.display = 'none';
                 BowlingScorecardModifier.style.display = 'block';
                 BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                takeScreenshot('second');
+                takeScreenshot('second', 'bowling');
 
                 let winningTeam;
                 let winningCause;
@@ -1137,7 +1177,7 @@
 
                 overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
                 MatchContainer.style.display = 'none'
-                takeScreenshot('second');
+                takeScreenshot('second', 'result');
                 console.log('second innings end', matchData, winningCause);
             }, 500)
         }, 1000)
