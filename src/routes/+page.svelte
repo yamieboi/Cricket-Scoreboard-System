@@ -1026,7 +1026,7 @@
                 }));
             } else {
                 formData.append('payload_json', JSON.stringify({
-                    content: `🏆 **Cricket Score Update**\n**${bowlingTeamName} VS. ${battingTeamName}**\n**Match Result**. \nBowling Team ${JSON.stringify(matchData.bowlingTeamName.battingData)} ${JSON.stringify(matchData.bowlingTeamName.bowlingData)} \nBatting Team ${JSON.stringify(matchData.battingTeamName.battingData)} ${JSON.stringify(matchData.battingTeamName.bowlingData)}`
+                    content: `🏆 **Cricket Score Update**\n**${battingTeamName} VS. ${battingTeamName}**\n**Match Result**. \nBowling Team [${JSON.stringify(matchData.bowlingTeamName.battingData)}] [${JSON.stringify(matchData.bowlingTeamName.bowlingData)}] \nBatting Team [${JSON.stringify(matchData.battingTeamName.battingData)}] [${JSON.stringify(matchData.battingTeamName.bowlingData)}]`
                 }));  
             }
 
