@@ -14,6 +14,9 @@
     let matchTitle;
     let windowTitle;
 
+    let BowlingScorecardModifier;
+    let BattingScorecardModifier;
+
     let buttonBatsmanModifier;
     let buttonBallsModifier;
     let buttonBowlerModifier;
@@ -23,6 +26,7 @@
     let ballInputContainer;
     let batterInfoBox;
     let BattingTeamScorebox;
+    let BowlingTeamScorebox;
     let bowlerInfoBox;
     let batButton;
     let bowlButton;
@@ -434,6 +438,7 @@
 
         if (p1 == 'addBall'){
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
+            console.log('adding ball to batsman', matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced)
             matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = ((matchData.battingTeamName.battingData[currentActiveBatsman].runs / matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced) * 100).toFixed(1);
         }
 
@@ -993,112 +998,149 @@
     let captureArea = DisplayElements; // Reference to the DOM element
     let screenshotUrl = '';
 
-    async function takeScreenshot() {
+    async function takeScreenshot(innings) {
         html2canvas(document.querySelector(".big-brother")).then(canvas => {
             const ctx = canvas.getContext("2d");
             const image = canvas.toDataURL("image/png", 1.0);
             screenshotUrl = image;
 
             const link = document.createElement('a');
-            link.download = 'screenshot' + window.crypto.getRandomValues(new Uint32Array(1)) + '.png';
+            link.download = innings + 'innings' +  window.crypto.getRandomValues(new Uint32Array(1)) + '.png';
             link.href = image;
             link.click();
         });
     }
 
     function FirstInningsEnd() {
-        let bowlingDataCopy = matchData.bowlingTeamName;
-
-        matchData.battingTeamName.runsScored = matchData.runCount;
-        matchData.battingTeamName.ballsFaced = matchData.ballCount;
-        matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
-        matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
-        matchData.battingTeamName.oversCount = matchData.oversCount; 
-
-        /* takeScreenshot(); */
-
-        SwapBowlerModifier.style.display = 'none';
-        SwapBatsmanModifier.style.display = 'none';
-        buttonBallsModifier.style.display = 'none';
-        buttonBowlerModifier.style.display = 'none';
-        buttonBatsmanModifier.style.display = 'none';
-        
         setTimeout(() => {
-            takeScreenshot();
-        }, 1000);
+            let bowlingDataCopy = matchData.bowlingTeamName;
 
-        setTimeout(() => {
-            SwapBowlerModifier.style.display = 'block';
-            SwapBatsmanModifier.style.display = 'block';
-            buttonBallsModifier.style.display = 'block';
-            buttonBowlerModifier.style.display = 'block';
-            buttonBatsmanModifier.style.display = 'block';
-
-            matchData.bowlingTeamName = matchData.battingTeamName;
-            matchData.battingTeamName = bowlingDataCopy;
-
-            bowlingTeamName = battingTeamName;
-            battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
-
-            matchData.target = (matchData.runCount + 1);
-
-            matchData.ballCount = 0;
-            matchData.runCount = 0;
-            matchData.totalWickets = 0;
-            matchData.oversCountFlt = 0;
-            matchData.oversCount = 0;
-
-            firstInningsEnd = true;
-
-            matchData.battingTeamName.activeBatsman = null;
-            matchData.bowlingTeamName.activeBowler = null;
-
-            makeBowlersBatters();
-            makeBattersBowlers();
-
-            console.log('first innings end', matchData);
-        }, 2000)
-    };
-
-    function SecondInningsEnd() {
-        setTimeout(() => {
             matchData.battingTeamName.runsScored = matchData.runCount;
             matchData.battingTeamName.ballsFaced = matchData.ballCount;
             matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
             matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
             matchData.battingTeamName.oversCount = matchData.oversCount; 
 
-            let winningTeam;
-            let winningCause;
+            SwapBowlerModifier.style.display = 'none';
+            SwapBatsmanModifier.style.display = 'none';
+            buttonBallsModifier.style.display = 'none';
+            buttonBowlerModifier.style.display = 'none';
+            buttonBatsmanModifier.style.display = 'none';
+            BowlingScorecardModifier.style.display = 'none';
+            BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+            BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
-                winningTeam = battingTeamName;
+            takeScreenshot('first');
 
-                winningCause = battingTeamName + ' won by ' + (((Object.keys(matchData.bowlingTeamName.bowlingData).length) == matchData.battingTeamName.totalBatters) ? matchData.battingTeamName.totalBatters : ((Object.keys(matchData.bowlingTeamName.bowlingData).length) - matchData.battingTeamName.totalBatters)) + ' wickets.'
-            } else if ((matchData.battingTeamName.runsScored < matchData.bowlingTeamName.runsScored)) {
-                winningTeam = bowlingTeamName;
+            BattingScorecardModifier.style.display = 'none';
+            BowlingScorecardModifier.style.display = 'block';
+            BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+            BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                let oversRemain = (oversPerInnings - matchData.battingTeamName.oversCount);
-                let oversRemainFlt = (0.6 - matchData.battingTeamName.oversCountFlt);
-                let oversRemainTotal = (oversRemain + oversRemainFlt).toFixed(1);
+            takeScreenshot('first');
 
-                let final = (oversRemainTotal == 0.6) ? 'no' : oversRemainTotal
+            setTimeout(() => {
+                SwapBowlerModifier.style.display = 'block';
+                SwapBatsmanModifier.style.display = 'block';
+                buttonBallsModifier.style.display = 'block';
+                buttonBowlerModifier.style.display = 'block';
+                buttonBatsmanModifier.style.display = 'block';
 
-                winningCause = bowlingTeamName + ' won by ' + (matchData.target - matchData.battingTeamName.runsScored) + ' runs.';
-            };
+                BattingScorecardModifier.style.display = 'block'; 
+                BowlingScorecardModifier.style.display = 'block';  
+
+                BattingTeamScorebox.style.maxHeight = '150px';
+                BattingTeamScorebox.style.height = '150px';
+                BowlingTeamScorebox.style.maxHeight = '150px';
+                BowlingTeamScorebox.style.height = '150px';      
+
+                matchData.bowlingTeamName = matchData.battingTeamName;
+                matchData.battingTeamName = bowlingDataCopy;
+
+                bowlingTeamName = battingTeamName;
+                battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
+
+                matchData.target = (matchData.runCount + 1);
+
+                matchData.ballCount = 0;
+                matchData.runCount = 0;
+                matchData.totalWickets = 0;
+                matchData.oversCountFlt = 0;
+                matchData.oversCount = 0;
+
+                firstInningsEnd = true;
+
+                matchData.battingTeamName.activeBatsman = null;
+                matchData.bowlingTeamName.activeBowler = null;
+
+                makeBowlersBatters();
+                makeBattersBowlers();
+
+                console.log('first innings end', matchData);
+            }, 10000)
+        }, 1000)
+    };
+
+    function SecondInningsEnd() {
+        setTimeout(() => {
+            setTimeout(() => {
+                matchData.battingTeamName.runsScored = matchData.runCount;
+                matchData.battingTeamName.ballsFaced = matchData.ballCount;
+                matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
+                matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
+                matchData.battingTeamName.oversCount = matchData.oversCount; 
+
+                SwapBowlerModifier.style.display = 'none';
+                SwapBatsmanModifier.style.display = 'none';
+                buttonBallsModifier.style.display = 'none';
+                buttonBowlerModifier.style.display = 'none';
+                buttonBatsmanModifier.style.display = 'none';
+                BowlingScorecardModifier.style.display = 'none';
+                BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+                BattingTeamScorebox.style.setProperty('height', '450px', 'important');
+
+                takeScreenshot('second');
+
+                BattingScorecardModifier.style.display = 'none';
+                BowlingScorecardModifier.style.display = 'block';
+                BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+                BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
+
+                takeScreenshot('second');
+
+                let winningTeam;
+                let winningCause;
+
+                if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
+                    winningTeam = battingTeamName;
+
+                    winningCause = battingTeamName + ' won by ' + (((Object.keys(matchData.bowlingTeamName.bowlingData).length) == matchData.battingTeamName.totalBatters) ? matchData.battingTeamName.totalBatters : ((Object.keys(matchData.bowlingTeamName.bowlingData).length) - matchData.battingTeamName.totalBatters)) + ' wickets.'
+                } else if ((matchData.battingTeamName.runsScored < matchData.bowlingTeamName.runsScored)) {
+                    winningTeam = bowlingTeamName;
+
+                    let oversRemain = (oversPerInnings - matchData.battingTeamName.oversCount);
+                    let oversRemainFlt = (0.6 - matchData.battingTeamName.oversCountFlt);
+                    let oversRemainTotal = (oversRemain + oversRemainFlt).toFixed(1);
+
+                    let final = (oversRemainTotal == 0.6) ? 'no' : oversRemainTotal
+
+                    winningCause = bowlingTeamName + ' won by ' + (matchData.target - matchData.battingTeamName.runsScored) + ' runs.';
+                };
 
 
-            if ((matchData.battingTeamName.runsScored == matchData.bowlingTeamName.runsScored)) {
-                winningTeam = 'Match Draw';
-                winningCause = 'Match Draw';
-            };
+                if ((matchData.battingTeamName.runsScored == matchData.bowlingTeamName.runsScored)) {
+                    winningTeam = 'Match Draw';
+                    winningCause = 'Match Draw';
+                };
 
 
 
-            overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
-            MatchContainer.style.display = 'none'
-            console.log('second innings end', matchData, winningCause);
-        }, 500)
+                overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
+                MatchContainer.style.display = 'none'
+                takeScreenshot('second');
+                console.log('second innings end', matchData, winningCause);
+            }, 500)
+        }, 1000)
     };
 
 </script>
@@ -1165,7 +1207,7 @@
 
     <div class="match-container" bind:this={MatchContainer} style="display:none">
         <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
-        <div class="batting-scorecard" class:blurred={isBlurred}>
+        <div class="batting-scorecard" bind:this={BattingScorecardModifier} class:blurred={isBlurred}>
             <div class="batting-team-name">
                 Now Batting {battingTeamName}
             </div>
@@ -1193,14 +1235,14 @@
             </div>
         </div>
         
-        <div class="bowling-scorecard" class:blurred={isBlurred}>
+        <div class="bowling-scorecard" bind:this={BowlingScorecardModifier} class:blurred={isBlurred}>
             <div class="bowling-team-name">
                 Now Bowling {bowlingTeamName}
             </div>
             
             <div class="stats-describer-bowling" style="display: flex; flex-direction: row; margin-top: -5px; flex-wrap: nowrap; align-content: center; justify-content: center; align-items: center; position: absolute; font-size: 0.8rem; font-family: Outfit; /* z-index: 2; */ margin-left: 115px; word-spacing: 10px;">Overs  Runs  Economy  Wickets</div>
 
-            <div class="bowling-team-scorebox">
+            <div class="bowling-team-scorebox" bind:this={BowlingTeamScorebox}>
                 {#if matchData && matchData.bowlingTeamName && matchData.bowlingTeamName.bowlingData}
                     {#each Object.entries(matchData.bowlingTeamName.bowlingData) as [name, stats]}
                         {#if !(name == '') && stats}
