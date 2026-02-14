@@ -1048,9 +1048,13 @@
                 alert("Error sending to Discord:", error);
             }
         });
+
+        setTimeout(() => {
+            console.log('')
+        }, 10000)
     };
 
-    function FirstInningsEnd() {
+    async function FirstInningsEnd() {
         ballInputContainer.style.display = 'none';
         setTimeout(() => {
             let bowlingDataCopy = matchData.bowlingTeamName;
@@ -1070,19 +1074,14 @@
             BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            takeScreenshot('first', 'batting');
-
-            setTimeout(() => {
-            }, 10000)
+            await takeScreenshot('first', 'batting');
 
             BattingScorecardModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'block';
             BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
-            
-            takeScreenshot('first', 'bowling');
-            setTimeout(() => {
-            }, 10000)
+
+            await takeScreenshot('first', 'bowling');
 
             setTimeout(() => {
                 SwapBowlerModifier.style.display = 'block';
@@ -1126,7 +1125,7 @@
         }, 1000)
     };
 
-    function SecondInningsEnd() {
+    async function SecondInningsEnd() {
         ballInputContainer.style.display = 'none';
         setTimeout(() => {
             setTimeout(() => {
@@ -1145,14 +1144,14 @@
                 BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                takeScreenshot('second', 'batting');
+                await takeScreenshot('second', 'batting');
 
                 BattingScorecardModifier.style.display = 'none';
                 BowlingScorecardModifier.style.display = 'block';
                 BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                takeScreenshot('second', 'bowling');
+                await takeScreenshot('second', 'bowling');
 
                 let winningTeam;
                 let winningCause;
@@ -1183,7 +1182,7 @@
 
                 overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
                 MatchContainer.style.display = 'none'
-                takeScreenshot('second', 'result');
+                await takeScreenshot('second', 'result');
                 console.log('second innings end', matchData, winningCause);
             }, 500)
         }, 1000)
