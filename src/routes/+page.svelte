@@ -1072,12 +1072,17 @@
 
             takeScreenshot('first', 'batting');
 
+            setTimeout(() => {
+            }, 10000)
+
             BattingScorecardModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'block';
             BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
-
+            
             takeScreenshot('first', 'bowling');
+            setTimeout(() => {
+            }, 10000)
 
             setTimeout(() => {
                 SwapBowlerModifier.style.display = 'block';
