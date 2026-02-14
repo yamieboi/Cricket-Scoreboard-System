@@ -1036,17 +1036,15 @@
                 const discordResponse = await fetch('https://discord.com/api/webhooks/1472260202781999258/tCXt000_BpVCelt1jpDqwwhkNnBOzOod8O3wyYEsJ_QkaougI4F0_hg05M3PCcFBEhac', {
                     method: 'POST',
                     body: formData 
-                    // Note: DO NOT set headers: { 'Content-Type': 'application/json' }
-                    // The browser will automatically set the correct boundary for FormData
                 });
 
                 if (discordResponse.ok) {
-                    console.log("Upload successful!");
+                    alert("Upload successful!");
                 } else {
-                    console.error("Upload failed:", await discordResponse.text());
+                    alert("Upload failed:", await discordResponse.text());
                 }
             } catch (error) {
-                console.error("Error sending to Discord:", error);
+                alert("Error sending to Discord:", error);
             }
         });
     };
