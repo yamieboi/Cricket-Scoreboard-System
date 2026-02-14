@@ -1,7 +1,9 @@
 <script>
     import { fade } from 'svelte/transition';
+    import html2canvas from 'html2canvas';
 
     let matchSetupContainer;
+    let DisplayElements;
     let MatchContainer;
     let teamNameContainer;
     let tossOversContainer;
@@ -40,6 +42,9 @@
     let LegByeRunsButton;
     let overallScoreCard;
     let WicketsButton;
+
+    let SwapBatsmanModifier;
+    let SwapBowlerModifier;
 
     let firstInningsEnd = false;
 
@@ -985,6 +990,22 @@
         CreateActivePlayer('bowling');
     };
 
+    let captureArea = DisplayElements; // Reference to the DOM element
+    let screenshotUrl = '';
+
+    async function takeScreenshot() {
+        html2canvas(document.querySelector(".big-brother")).then(canvas => {
+            const ctx = canvas.getContext("2d");
+            const image = canvas.toDataURL("image/png", 1.0);
+            screenshotUrl = image;
+
+            const link = document.createElement('a');
+            link.download = 'screenshot' + window.crypto.getRandomValues(new Uint32Array(1)) + '.png';
+            link.href = image;
+            link.click();
+        });
+    }
+
     function FirstInningsEnd() {
         let bowlingDataCopy = matchData.bowlingTeamName;
 
@@ -994,7 +1015,25 @@
         matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
         matchData.battingTeamName.oversCount = matchData.oversCount; 
 
+        /* takeScreenshot(); */
+
+        SwapBowlerModifier.style.display = 'none';
+        SwapBatsmanModifier.style.display = 'none';
+        buttonBallsModifier.style.display = 'none';
+        buttonBowlerModifier.style.display = 'none';
+        buttonBatsmanModifier.style.display = 'none';
+        
         setTimeout(() => {
+            takeScreenshot();
+        }, 1000);
+
+        setTimeout(() => {
+            SwapBowlerModifier.style.display = 'block';
+            SwapBatsmanModifier.style.display = 'block';
+            buttonBallsModifier.style.display = 'block';
+            buttonBowlerModifier.style.display = 'block';
+            buttonBatsmanModifier.style.display = 'block';
+
             matchData.bowlingTeamName = matchData.battingTeamName;
             matchData.battingTeamName = bowlingDataCopy;
 
@@ -1018,7 +1057,7 @@
             makeBattersBowlers();
 
             console.log('first innings end', matchData);
-        }, 1000)
+        }, 2000)
     };
 
     function SecondInningsEnd() {
@@ -1064,7 +1103,7 @@
 
 </script>
 
-<div class="big-brother" transition:fade>
+<div class="big-brother" bind:this={DisplayElements} transition:fade>
     <div style="font-size:2vh">
         <h1 style="font-family: Outfit; user-select:none; text-align:center; color:rgba(0, 0, 0, 0.6); ">
             <span style="color:rgba(0, 0, 0, 0.8);">Cricket Scoreboard</span> <br>
@@ -1216,8 +1255,8 @@
         <input class="button-batsman-modifier" class:blurred={isBlurred} type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
         <input class="button-bowler-modifier"class:blurred={isBlurred}  type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
         <input class="button-ball-modifier" class:blurred={isBlurred} type="button" value="Add Ball" bind:this={buttonBallsModifier} on:click={AddBallButton}>
-        <input class="button-swap-batter-modifier" class:blurred={isBlurred} type="button" value="Swap Batsman" on:click={SwapBatsmanButton}>
-        <input class="button-swap-bowler-modifier" class:blurred={isBlurred} type="button" value="Swap Bowler" on:click={SwapBowlerButton}>
+        <input class="button-swap-batter-modifier" class:blurred={isBlurred} type="button" value="Swap Batsman" bind:this={SwapBatsmanModifier} on:click={SwapBatsmanButton}>
+        <input class="button-swap-bowler-modifier" class:blurred={isBlurred} type="button" value="Swap Bowler" bind:this={SwapBowlerModifier} on:click={SwapBowlerButton}>
     </div>
 
     <div style="color:rgba(0, 0, 0, 0.8); margin-top: 5px; font-size: 1.5rem; font-weight: bolder;">চির উন্নত মম শির!</div>
