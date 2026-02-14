@@ -999,15 +999,16 @@
     let screenshotUrl = '';
 
     async function takeScreenshot(innings, p2) {
+        ballInputContainer.style.display = 'none';
         html2canvas(document.querySelector(".big-brother")).then(async canvas => {
             const ctx = canvas.getContext("2d");
             const image = canvas.toDataURL("image/png", 1.0);
             screenshotUrl = image;
 
-            const link = document.createElement('a');
+            /* const link = document.createElement('a');
             link.download = innings + 'innings' +  window.crypto.getRandomValues(new Uint32Array(1)) + '.png';
             link.href = image;
-            link.click();
+            link.click(); */
 
             // 1. Convert Base64 DataURL to a Blob (Binary Large Object)
             const res = await fetch(image);
