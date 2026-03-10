@@ -1007,7 +1007,16 @@
 
     async function takeScreenshot(innings, p2) {
         ballInputContainer.style.display = 'none';
-        html2canvas(document.querySelector(".big-brother")).then(async canvas => {
+        html2canvas(document.querySelector(".big-brother"), {
+            scale: 1,
+            useCORS: true,
+            scrollX: 0,
+            scrollY: -window.scrollY,
+            width: document.querySelector(".big-brother").scrollWidth,
+            height: document.querySelector(".big-brother").scrollHeight,
+            windowWidth: document.querySelector(".big-brother").scrollWidth,
+            windowHeight: document.querySelector(".big-brother").scrollHeight
+        }).then(async canvas => {
             const ctx = canvas.getContext("2d");
             const image = canvas.toDataURL("image/png", 1.0);
             screenshotUrl = image;
@@ -1173,6 +1182,7 @@
 
     async function SecondInningsEnd() {
         isBlurred = false;
+        openedInputBox = false;
         ballInputContainer.style.display = 'none';
         setTimeout(() => {
             setTimeout(() => {
