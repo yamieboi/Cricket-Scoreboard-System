@@ -8,6 +8,7 @@
     let teamNameContainer;
     let tossOversContainer;
     let tossDecisionContainer;
+    let MatchResults;
     let proceedButtonBox;
     let buttonProceed;
     let buttonSubmit;
@@ -31,6 +32,9 @@
     let batButton;
     let bowlButton;
     let isBlurred = $state(false);
+
+    let winningTeam;
+    let winningCause = $state('');
 
     
     let ZeroRunsButton;
@@ -76,6 +80,9 @@
 
     let teamOneBowling = {}
     let teamTwoBowling = {}
+
+    let InningsScreenies = []
+    let ScreeniesImages = []
 
     let testing = true
 
@@ -148,11 +155,11 @@
                 position: relative;
                 display: flex;
                 border-radius: 5px;
-                flex-flow: column;
-                place-content: center flex-start;
                 user-select: none;
                 align-items: center;
                 margin-bottom: 5px;
+                flex-flow: column;
+                place-content: center flex-start;
                 flex-wrap: nowrap;
                 flex-direction: row;
                 align-content: center;
@@ -1019,21 +1026,26 @@
             
             // 'file' is the key Discord looks for to display an image
             formData.append('file', blob, `scoreboard-${innings}.png`);
+
+            ScreeniesImages.push(image)
             
             // Optional: Add text along with the image
             if (!(p2 == 'result')) {
                 formData.append('payload_json', JSON.stringify({
                     content: `🏆 **Cricket Score Update**\n**${battingTeamName} VS. ${bowlingTeamName}**\nInnings: **${innings}**\nScorecard Of **${p2}** team.` 
                 }));
+
+                InningsScreenies.push(formData);
             } else {
                 formData.append('payload_json', JSON.stringify({
                     content: `🏆 **Cricket Score Update**\n**${battingTeamName} VS. ${battingTeamName}**\n**Match Result**. \nBowling Team [${JSON.stringify(matchData.bowlingTeamName.battingData)}] [${JSON.stringify(matchData.bowlingTeamName.bowlingData)}] \nBatting Team [${JSON.stringify(matchData.battingTeamName.battingData)}] [${JSON.stringify(matchData.battingTeamName.bowlingData)}]`
                 }));  
+
+                InningsScreenies.push(formData);
             }
 
 
-            // 3. Execute the Upload
-            try {
+/*             try {
                 const discordResponse = await fetch('https://discord.com/api/webhooks/1472260202781999258/tCXt000_BpVCelt1jpDqwwhkNnBOzOod8O3wyYEsJ_QkaougI4F0_hg05M3PCcFBEhac', {
                     method: 'POST',
                     body: formData 
@@ -1046,7 +1058,7 @@
                 }
             } catch (error) {
                 alert("Error sending to Discord:", error);
-            }
+            } */
         });
 
         setTimeout(() => {
@@ -1054,7 +1066,40 @@
         }, 10000)
     };
 
+
+    async function downloadScreeny(fData) {
+        try {
+            const discordResponse = await fetch('https://discord.com/api/webhooks/1472260202781999258/tCXt000_BpVCelt1jpDqwwhkNnBOzOod8O3wyYEsJ_QkaougI4F0_hg05M3PCcFBEhac', {
+                method: 'POST',
+                body: fData 
+            });
+
+            if (discordResponse.ok) {
+                //alert("Upload successful!");
+            } else {
+                alert("Upload failed:", await discordResponse.text());
+            }
+        } catch (error) {
+            alert("Error sending to Discord:", error);
+        }
+    };
+
+    function DownloadScreenshot(i) {
+        // Create a temporary anchor element
+        const a = document.createElement('a');
+        a.setAttribute('download', 'my-screenshot.png'); // Set the download file name
+        a.setAttribute('href', ScreeniesImages[i]); // Set the link's destination to the image data
+
+        // Append the link to the body and programmatically click it to trigger the download
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up: remove the link after the download starts
+        document.body.removeChild(a);
+    }
+
     async function FirstInningsEnd() {
+        isBlurred = false;
         ballInputContainer.style.display = 'none';
         setTimeout(() => {
             let bowlingDataCopy = matchData.bowlingTeamName;
@@ -1074,14 +1119,14 @@
             BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            await takeScreenshot('first', 'batting');
+            takeScreenshot('first', 'batting');
 
             BattingScorecardModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'block';
             BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-            await takeScreenshot('first', 'bowling');
+            takeScreenshot('first', 'bowling');
 
             setTimeout(() => {
                 SwapBowlerModifier.style.display = 'block';
@@ -1121,11 +1166,13 @@
                 makeBattersBowlers();
 
                 console.log('first innings end', matchData);
-            }, 10000)
+            }, 500)
+            isBlurred = false;
         }, 1000)
     };
 
     async function SecondInningsEnd() {
+        isBlurred = false;
         ballInputContainer.style.display = 'none';
         setTimeout(() => {
             setTimeout(() => {
@@ -1144,17 +1191,14 @@
                 BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                await takeScreenshot('second', 'batting');
+                takeScreenshot('second', 'batting');
 
                 BattingScorecardModifier.style.display = 'none';
                 BowlingScorecardModifier.style.display = 'block';
                 BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
                 BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                await takeScreenshot('second', 'bowling');
-
-                let winningTeam;
-                let winningCause;
+                takeScreenshot('second', 'bowling');
 
                 if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
                     winningTeam = battingTeamName;
@@ -1180,11 +1224,24 @@
 
 
 
-                overallScoreCard.innerHTML = '<div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px;">' + winningCause + '</div>';
+
+                overallScoreCard.style.display = 'none'
                 MatchContainer.style.display = 'none'
-                await takeScreenshot('second', 'result');
+                MatchResults.style.display = 'flex'
+
+                setTimeout(() => {
+                    takeScreenshot('second', 'result');
+                }, 1000)
+
+                setTimeout(() => {
+                    for (let i = 0; i < InningsScreenies.length; i++) {
+                        downloadScreeny(InningsScreenies[i]);
+                    }
+                }, 2000)
+                
                 console.log('second innings end', matchData, winningCause);
             }, 500)
+            isBlurred = false;
         }, 1000)
     };
 
@@ -1249,6 +1306,21 @@
         <div class="batting-team-overall-score" style="font-family: Outfit; left: 230px; position: absolute; width: 50px; text-align: center; font-size: 1.2rem; flex-grow: 0; flex-shrink: 0; font-weight: 600;">{matchData.runCount}/{matchData.totalWickets} </div>
         <div class="overs-count-overall" style="font-family: Outfit; flex-grow: 0; left: 290px; position: absolute; flex-shrink: 0; width: 50px; text-align: center; font-size: 1.2rem; font-weight: 600;">{((matchData.oversCount + matchData.oversCountFlt).toFixed(1))}</div>
     </div>
+
+    <div class='match-results' style="width: 350px;color: rgb(255, 255, 255);background-color: rgba(3, 3, 3, 0.7);position: relative;display: none;border-radius: 5px;user-select: none;align-items: flex-start;margin-bottom: 5px;flex-flow: row;place-content: center flex-start;flex-wrap: nowrap;flex-direction: column;align-content: flex-start;justify-content: flex-start;" bind:this={MatchResults}>
+        <div style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 10px;">{winningCause}</div>
+        <br>
+        <input type="button" style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 10px;" value="Download Stats 1" on:click={DownloadScreenshot(0)}>
+        <br>
+        <input type="button" style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 5px;" value="Download Stats 2" on:click={DownloadScreenshot(1)}>
+        <br>
+        <input type="button" style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 5px;" value="Download Stats 3" on:click={DownloadScreenshot(2)}>
+        <br>
+        <input type="button" style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 5px;" value="Download Stats 4" on:click={DownloadScreenshot(3)}>
+        <br>
+        <input type="button" style="font-family: Outfit; font-size: 1.3rem; margin-left: 10px; margin-top: 5px; margin-bottom: 10px;" value="Download Stats 5" on:click={DownloadScreenshot(4)}>
+    </div>
+    
 
     <div class="match-container" bind:this={MatchContainer} style="display:none">
         <div class="match-title" bind:this={matchTitle} style="font-family: Outfit; font-size: 2rem; padding-top: 10px; font-weight: 500; user-select:none; text-align:center; color:rgba(255, 255, 255, 0.8);">Match</div>
