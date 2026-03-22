@@ -21,6 +21,7 @@
     let buttonBatsmanModifier;
     let buttonBallsModifier;
     let buttonBowlerModifier;
+    let buttonUndoBowl;
     let teamOneTossButton;
     let teamTwoTossButton;
     let infoInputContainer;
@@ -86,6 +87,9 @@
 
     let testing = true
 
+    let veryLastBatsman;
+    let veryLastBatsmanIndex;
+
     function ProceedButton() {
         if (!teamNamesEntered && (teamOneName != '' && teamTwoName != '') && !(teamOneName == teamTwoName)) {
             teamNamesEntered = true;
@@ -121,7 +125,6 @@
             tossDecisionContainer.style.display = `none`;
             buttonProceed.style.display = 'none';
             windowTitle.innerHTML = "Match";
-            matchSetupContainer.style.display = 'none';
 
             if (tossWinTeamDecision == 'bat') {
                 battingTeamName = tossWinTeam;
@@ -130,78 +133,86 @@
                 bowlingTeamName = tossWinTeam;
                 battingTeamName = (tossWinTeam == teamOneName) ? teamTwoName : teamOneName;
             };
+            
+            matchSetupContainer.innerHTML = `ইনিংসের মাঝে প্রতিটি দলের পরিসংখ্যান সংগ্রহের জন্য ৩০ সেকেন্ড করে সময় দেওয়া হবে <br> 
+            <br>There will be a pause of 30 seconds for each team. The stats shall be captured.`;
+            matchSetupContainer.style.fontSize = '27px';
+            matchSetupContainer.style.padding = '15px';
 
-            MatchContainer.style = `
-                height: 650px;
-                width: 350px;
-                color: rgb(255, 255, 255);
-                background-color: rgba(3, 3, 3, 0.7);
-                position: relative;
-                display: flex;
-                border-radius: 5px;
-                flex-direction: column;
-                flex-wrap: nowrap;
-                align-content: center;
-                justify-content: flex-start;
-                user-select: none;
-                align-items: center;
-            `;
+            setTimeout(() => {
+                matchSetupContainer.style.display = 'none';
+                MatchContainer.style = `
+                    height: 650px;
+                    width: 350px;
+                    color: rgb(255, 255, 255);
+                    background-color: rgba(3, 3, 3, 0.7);
+                    position: relative;
+                    display: flex;
+                    border-radius: 5px;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    align-content: center;
+                    justify-content: flex-start;
+                    user-select: none;
+                    align-items: center;
+                `;
 
-            overallScoreCard.style = `
-                height: 50px;
-                width: 350px;
-                color: rgb(255, 255, 255);
-                background-color: rgba(3, 3, 3, 0.7);
-                position: relative;
-                display: flex;
-                border-radius: 5px;
-                user-select: none;
-                align-items: center;
-                margin-bottom: 5px;
-                flex-flow: column;
-                place-content: center flex-start;
-                flex-wrap: nowrap;
-                flex-direction: row;
-                align-content: center;
-                justify-content: flex-start;
-                
-            `;
+                overallScoreCard.style = `
+                    height: 50px;
+                    width: 350px;
+                    color: rgb(255, 255, 255);
+                    background-color: rgba(3, 3, 3, 0.7);
+                    position: relative;
+                    display: flex;
+                    border-radius: 5px;
+                    user-select: none;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    flex-flow: column;
+                    place-content: center flex-start;
+                    flex-wrap: nowrap;
+                    flex-direction: row;
+                    align-content: center;
+                    justify-content: flex-start;
+                    
+                `;
 
-            matchData.battingTeamName = {
-                isBatting: true,
-                isBowling: false,
-                battingData: {},
-                bowlingData: {},
-                availableBowlers: [],
-                availableBatters: [],
-                totalBatters: 0,
-                totalBowlers: 0
-            };
+                matchData.battingTeamName = {
+                    isBatting: true,
+                    isBowling: false,
+                    battingData: {},
+                    bowlingData: {},
+                    availableBowlers: [],
+                    availableBatters: [],
+                    totalBatters: 0,
+                    totalBowlers: 0
+                };
 
-            matchData.bowlingTeamName = {
-                isBatting: false,
-                isBowling: true,
-                battingData: {},
-                bowlingData: {},
-                availableBowlers: [],
-                availableBatters: [],
-                totalBatters: 0,
-                totalBowlers: 0
-            }
+                matchData.bowlingTeamName = {
+                    isBatting: false,
+                    isBowling: true,
+                    battingData: {},
+                    bowlingData: {},
+                    availableBowlers: [],
+                    availableBatters: [],
+                    totalBatters: 0,
+                    totalBowlers: 0
+                }
 
-            matchData.currentOver = [];
-            matchData.selectedOptionsForBall = [];
-            matchData.ballCount = 0;
-            matchData.runCount = 0;
-            matchData.totalWickets = 0;
-            matchData.currentOverNumber = 0;
-            matchData.oversData = {};
-            matchData.maxBallCount = (oversPerInnings * 6);
-            matchData.oversCountFlt = 0;
-            matchData.oversCount = 0;
-            matchData.selectedExclusiveOptions = false;
+                matchData.currentOver = [];
+                matchData.selectedOptionsForBall = [];
+                matchData.ballCount = 0;
+                matchData.runCount = 0;
+                matchData.totalWickets = 0;
+                matchData.currentOverNumber = 0;
+                matchData.oversData = {};
+                matchData.maxBallCount = (oversPerInnings * 6);
+                matchData.oversCountFlt = 0;
+                matchData.oversCount = 0;
+                matchData.selectedExclusiveOptions = false;
 
-            console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
+                console.log("batting team", battingTeamName, "bowling team", bowlingTeamName);
+            }, 5000)
         };
     };
 
@@ -282,6 +293,108 @@
         infoInputContainer.style.display = "flex";
         bowlerInfoBox.style.display = 'block';
     };
+
+    function UndoButton(p1, p2) {
+        let veryLastBowl = matchData.currentOver.at(-1);
+        let totalRunsThisBall = 0
+        let countBall = true;
+
+        if (!veryLastBowl) {
+            return;
+        }
+
+        veryLastBowl.forEach(function(item, index) {
+            console.log('1', item, index)
+            console.log((typeof item))
+            if (((typeof item) == 'number')) { 
+                totalRunsThisBall = (totalRunsThisBall + item);
+                ProcessBatsmanStats('add', item, true);
+                ProcessBowlerStats('add', item, true);
+                console.log('2', totalRunsThisBall, index)
+            };
+
+            if (item == 'wide') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBowlerStats('add', 1, true);
+                countBall = false;
+            }
+
+            if (item == 'byes') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', 1, true);
+                ProcessBowlerStats('add', 1, true);
+            }
+
+            if (item == 'legbyes') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', 1, true);
+                ProcessBowlerStats('add', 1, true);
+            }
+
+            if (item == 'noball') {
+                totalRunsThisBall = (totalRunsThisBall + 1);
+                ProcessBatsmanStats('add', 1, true);
+                ProcessBowlerStats('add', 1, true);
+                countBall = false;
+            };
+
+            if (item == 'wicket') {
+                totalRunsThisBall = (totalRunsThisBall + 0);
+                ProcessBowlerStats('wicket', matchData.battingTeamName.activeBatsman, true);
+                ProcessBatsmanStats('wicket', matchData.bowlingTeamName.activeBowler, true);
+                matchData.totalWickets += 1;
+            };
+
+        });
+
+        if (countBall) {
+            matchData.ballCount = (matchData.ballCount - 1);
+            matchData.oversCountFlt -= 0.1;
+
+            if (matchData.oversCountFlt > 0.5) {
+                matchData.oversCountFlt = 0.5;
+            };
+
+            ProcessBatsmanStats('addBall', '', true);
+        };
+
+        matchData.runCount = (matchData.runCount - totalRunsThisBall);
+        matchData.currentOver.pop();
+
+/*         if ((matchData.target) && (matchData.runCount >= matchData.target)) {
+            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
+            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            matchData.currentOver = [];
+            console.log('match over, by target reached.')
+            SecondInningsEnd();
+        };
+
+        if (countBall && (matchData.ballCount % 6) == 0) {
+            ProcessBowlerStats('over');
+            ProcessBatsmanStats('over');
+            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
+            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            matchData.currentOver = [];
+
+            matchData.oversCountFlt -= 0.5;
+
+            matchData.oversCount += 1;
+
+            if (matchData.maxBallCount == matchData.ballCount) {
+                console.log('innings has ended, by ball count.')
+                if (!(firstInningsEnd)) {
+                    FirstInningsEnd();
+                } else if ((firstInningsEnd)) {
+                    SecondInningsEnd();
+                };
+            };
+        }; */
+
+        matchData.selectedOptionsForBall = [];
+        console.log(matchData);
+        addBallEvent('clear');
+    };
+
 
     function AddBallButton(p1, p2) {
         if (openedInputBox) {
@@ -430,10 +543,21 @@
         openedInputBox = false;
     };
 
-    function ProcessBatsmanStats(p1, p2) {
+    function ProcessBatsmanStats(p1, p2, isUndo) {
         let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
         console.log(p1, p2)
         if (p1 == 'add') {
+            if (isUndo) {
+                matchData.battingTeamName.battingData[currentActiveBatsman].runs -= p2
+
+                if (p2 == 4) {
+                    matchData.battingTeamName.battingData[currentActiveBatsman].foursHit -= 1
+                } else if (p2 == 6) {
+                    matchData.battingTeamName.battingData[currentActiveBatsman].sixesHit -= 1
+                };
+                return;
+            };
+
             matchData.battingTeamName.battingData[currentActiveBatsman].runs += p2
 
             if (p2 == 4) {
@@ -444,15 +568,38 @@
         }
 
         if (p1 == 'addBall'){
+            if (isUndo) {
+                matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced -= 1
+
+                if (matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced <= 0) {
+                    matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = 0;
+                    return;
+                }
+
+                matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = ((matchData.battingTeamName.battingData[currentActiveBatsman].runs / matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced) * 100).toFixed(1);
+                return;
+            }
+
             matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced += 1
             console.log('adding ball to batsman', matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced)
             matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = ((matchData.battingTeamName.battingData[currentActiveBatsman].runs / matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced) * 100).toFixed(1);
         }
 
         if (p1 == 'wicket') {
+            if (isUndo) {
+                matchData.battingTeamName.battingData[veryLastBatsman].isOut = false;
+                matchData.battingTeamName.battingData[veryLastBatsman].wicketTakenBy = null;
+
+                matchData.battingTeamName.availableBatters.splice(veryLastBatsmanIndex, 0, matchData.battingTeamName.battingData[veryLastBatsman].index);
+                matchData.battingTeamName.totalBatters += 1
+                return;
+            };
+
             matchData.battingTeamName.battingData[currentActiveBatsman].isOut = true;
             matchData.battingTeamName.battingData[currentActiveBatsman].wicketTakenBy = p2;
 
+            veryLastBatsmanIndex = matchData.battingTeamName.battingData[currentActiveBatsman].arrayIndex;
+            veryLastBatsman = currentActiveBatsman;
             matchData.battingTeamName.availableBatters.splice(matchData.battingTeamName.battingData[currentActiveBatsman].arrayIndex, 1);
             matchData.battingTeamName.totalBatters -= 1
 
@@ -463,10 +610,14 @@
         };
     };
 
-    function ProcessBowlerStats(p1, p2) {
+    function ProcessBowlerStats(p1, p2, isUndo) {
         let currentActiveBowler = matchData.bowlingTeamName.activeBowler;
         console.log(p1, p2)
         if (p1 == 'add') {
+            if (isUndo) {
+                matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs -= p2;
+                return;
+            };
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs += p2;
         };
 
@@ -474,6 +625,15 @@
             if ((Object.keys(matchData.battingTeamName.battingData).length > 1)) {
                 matchData.bowlingTeamName.needToChangeBowler = true;
             };
+
+            if (isUndo) {
+                matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled -= 1;
+
+                let economy = (matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs / matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled);
+                matchData.bowlingTeamName.bowlingData[currentActiveBowler].economy = parseFloat(economy.toFixed(2));
+                CreateActivePlayer('bowling');
+                return;
+            };            
 
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled += 1;
 
@@ -483,6 +643,11 @@
         };
 
         if (p1 == 'wicket') {
+            if (isUndo) {
+                matchData.bowlingTeamName.bowlingData[currentActiveBowler].wicketsTaken.pop();
+                matchData.bowlingTeamName.bowlingData[currentActiveBowler].wickets -= 1
+                return;
+            };
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].wicketsTaken.push(p2);
             matchData.bowlingTeamName.bowlingData[currentActiveBowler].wickets += 1
         };
@@ -1110,8 +1275,9 @@
     async function FirstInningsEnd() {
         isBlurred = false;
         ballInputContainer.style.display = 'none';
+        let bowlingDataCopy;
         setTimeout(() => {
-            let bowlingDataCopy = matchData.bowlingTeamName;
+            bowlingDataCopy = matchData.bowlingTeamName;
 
             matchData.battingTeamName.runsScored = matchData.runCount;
             matchData.battingTeamName.ballsFaced = matchData.ballCount;
@@ -1123,136 +1289,142 @@
             SwapBatsmanModifier.style.display = 'none';
             buttonBallsModifier.style.display = 'none';
             buttonBowlerModifier.style.display = 'none';
+            buttonUndoBowl.style.display = 'none';
             buttonBatsmanModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'none';
             BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
             takeScreenshot('first', 'batting');
+        }, 1000)
 
+        setTimeout(() => {
             BattingScorecardModifier.style.display = 'none';
             BowlingScorecardModifier.style.display = 'block';
             BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
             BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
 
             takeScreenshot('first', 'bowling');
+        }, 30000)
 
-            setTimeout(() => {
-                SwapBowlerModifier.style.display = 'block';
-                SwapBatsmanModifier.style.display = 'block';
-                buttonBallsModifier.style.display = 'block';
-                buttonBowlerModifier.style.display = 'block';
-                buttonBatsmanModifier.style.display = 'block';
+        setTimeout(() => {
+            SwapBowlerModifier.style.display = 'block';
+            SwapBatsmanModifier.style.display = 'block';
+            buttonBallsModifier.style.display = 'block';
+            buttonBowlerModifier.style.display = 'block';
+            buttonUndoBowl.style.display = 'block';
+            buttonBatsmanModifier.style.display = 'block';
 
-                BattingScorecardModifier.style.display = 'block'; 
-                BowlingScorecardModifier.style.display = 'block';  
+            BattingScorecardModifier.style.display = 'block'; 
+            BowlingScorecardModifier.style.display = 'block';  
 
-                BattingTeamScorebox.style.maxHeight = '150px';
-                BattingTeamScorebox.style.height = '150px';
-                BowlingTeamScorebox.style.maxHeight = '150px';
-                BowlingTeamScorebox.style.height = '150px';      
+            BattingTeamScorebox.style.maxHeight = '150px';
+            BattingTeamScorebox.style.height = '150px';
+            BowlingTeamScorebox.style.maxHeight = '150px';
+            BowlingTeamScorebox.style.height = '150px';      
 
-                matchData.bowlingTeamName = matchData.battingTeamName;
-                matchData.battingTeamName = bowlingDataCopy;
+            matchData.bowlingTeamName = matchData.battingTeamName;
+            matchData.battingTeamName = bowlingDataCopy;
 
-                bowlingTeamName = battingTeamName;
-                battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
+            bowlingTeamName = battingTeamName;
+            battingTeamName = (bowlingTeamName == teamOneName) ? teamTwoName : teamOneName;
 
-                matchData.target = (matchData.runCount + 1);
+            matchData.target = (matchData.runCount + 1);
 
-                matchData.ballCount = 0;
-                matchData.runCount = 0;
-                matchData.totalWickets = 0;
-                matchData.oversCountFlt = 0;
-                matchData.oversCount = 0;
+            matchData.ballCount = 0;
+            matchData.runCount = 0;
+            matchData.totalWickets = 0;
+            matchData.oversCountFlt = 0;
+            matchData.oversCount = 0;
 
-                firstInningsEnd = true;
+            firstInningsEnd = true;
 
-                matchData.battingTeamName.activeBatsman = null;
-                matchData.bowlingTeamName.activeBowler = null;
+            matchData.battingTeamName.activeBatsman = null;
+            matchData.bowlingTeamName.activeBowler = null;
 
-                makeBowlersBatters();
-                makeBattersBowlers();
+            makeBowlersBatters();
+            makeBattersBowlers();
 
-                console.log('first innings end', matchData);
-            }, 500)
+            console.log('first innings end', matchData);
+
             isBlurred = false;
-        }, 1000)
+        }, 60000)
     };
 
     async function SecondInningsEnd() {
         isBlurred = false;
         openedInputBox = false;
         ballInputContainer.style.display = 'none';
+
         setTimeout(() => {
-            setTimeout(() => {
-                matchData.battingTeamName.runsScored = matchData.runCount;
-                matchData.battingTeamName.ballsFaced = matchData.ballCount;
-                matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
-                matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
-                matchData.battingTeamName.oversCount = matchData.oversCount; 
+            matchData.battingTeamName.runsScored = matchData.runCount;
+            matchData.battingTeamName.ballsFaced = matchData.ballCount;
+            matchData.battingTeamName.wicketsFallen = matchData.totalWickets;
+            matchData.battingTeamName.oversCountFlt = matchData.oversCountFlt;
+            matchData.battingTeamName.oversCount = matchData.oversCount; 
 
-                SwapBowlerModifier.style.display = 'none';
-                SwapBatsmanModifier.style.display = 'none';
-                buttonBallsModifier.style.display = 'none';
-                buttonBowlerModifier.style.display = 'none';
-                buttonBatsmanModifier.style.display = 'none';
-                BowlingScorecardModifier.style.display = 'none';
-                BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
-                BattingTeamScorebox.style.setProperty('height', '450px', 'important');
+            SwapBowlerModifier.style.display = 'none';
+            SwapBatsmanModifier.style.display = 'none';
+            buttonBallsModifier.style.display = 'none';
+            buttonBowlerModifier.style.display = 'none';
+            buttonUndoBowl.style.display = 'none';
+            buttonBatsmanModifier.style.display = 'none';
+            BowlingScorecardModifier.style.display = 'none';
+            BattingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+            BattingTeamScorebox.style.setProperty('height', '450px', 'important');
 
-                takeScreenshot('second', 'batting');
-
-                BattingScorecardModifier.style.display = 'none';
-                BowlingScorecardModifier.style.display = 'block';
-                BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
-                BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
-
-                takeScreenshot('second', 'bowling');
-
-                if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
-                    winningTeam = battingTeamName;
-
-                    winningCause = battingTeamName + ' won by ' + (((Object.keys(matchData.bowlingTeamName.bowlingData).length) == matchData.battingTeamName.totalBatters) ? matchData.battingTeamName.totalBatters : ((Object.keys(matchData.bowlingTeamName.bowlingData).length) - matchData.battingTeamName.totalBatters)) + ' wickets.'
-                } else if ((matchData.battingTeamName.runsScored < matchData.bowlingTeamName.runsScored)) {
-                    winningTeam = bowlingTeamName;
-
-                    let oversRemain = (oversPerInnings - matchData.battingTeamName.oversCount);
-                    let oversRemainFlt = (0.6 - matchData.battingTeamName.oversCountFlt);
-                    let oversRemainTotal = (oversRemain + oversRemainFlt).toFixed(1);
-
-                    let final = (oversRemainTotal == 0.6) ? 'no' : oversRemainTotal
-
-                    winningCause = bowlingTeamName + ' won by ' + (matchData.target - matchData.battingTeamName.runsScored) + ' runs.';
-                };
-
-
-                if ((matchData.battingTeamName.runsScored == matchData.bowlingTeamName.runsScored)) {
-                    winningTeam = 'Match Draw';
-                    winningCause = 'Match Draw';
-                };
-
-
-
-
-                overallScoreCard.style.display = 'none'
-                MatchContainer.style.display = 'none'
-                MatchResults.style.display = 'flex'
-
-                setTimeout(() => {
-                    takeScreenshot('second', 'result');
-                }, 1000)
-
-                setTimeout(() => {
-                    for (let i = 0; i < InningsScreenies.length; i++) {
-                        downloadScreeny(InningsScreenies[i]);
-                    }
-                }, 2000)
-                
-                console.log('second innings end', matchData, winningCause);
-            }, 500)
-            isBlurred = false;
+            takeScreenshot('second', 'batting');
         }, 1000)
+
+        setTimeout(() => {
+            BattingScorecardModifier.style.display = 'none';
+            BowlingScorecardModifier.style.display = 'block';
+            BowlingTeamScorebox.style.setProperty('max-height', '450px', 'important');
+            BowlingTeamScorebox.style.setProperty('height', '450px', 'important');
+
+            takeScreenshot('second', 'bowling');
+        }, 30000)
+
+        setTimeout(() => {
+            if ((matchData.battingTeamName.runsScored > matchData.bowlingTeamName.runsScored)) {
+                winningTeam = battingTeamName;
+
+                winningCause = battingTeamName + ' won by ' + (((Object.keys(matchData.bowlingTeamName.bowlingData).length) == matchData.battingTeamName.totalBatters) ? matchData.battingTeamName.totalBatters : ((Object.keys(matchData.bowlingTeamName.bowlingData).length) - matchData.battingTeamName.totalBatters)) + ' wickets.'
+            } else if ((matchData.battingTeamName.runsScored < matchData.bowlingTeamName.runsScored)) {
+                winningTeam = bowlingTeamName;
+
+                let oversRemain = (oversPerInnings - matchData.battingTeamName.oversCount);
+                let oversRemainFlt = (0.6 - matchData.battingTeamName.oversCountFlt);
+                let oversRemainTotal = (oversRemain + oversRemainFlt).toFixed(1);
+
+                let final = (oversRemainTotal == 0.6) ? 'no' : oversRemainTotal
+
+                winningCause = bowlingTeamName + ' won by ' + (matchData.target - matchData.battingTeamName.runsScored) + ' runs.';
+            };
+
+
+            if ((matchData.battingTeamName.runsScored == matchData.bowlingTeamName.runsScored)) {
+                winningTeam = 'Match Draw';
+                winningCause = 'Match Draw';
+            };
+
+            overallScoreCard.style.display = 'none'
+            MatchContainer.style.display = 'none'
+            MatchResults.style.display = 'flex'
+
+            setTimeout(() => {
+                takeScreenshot('second', 'result');
+            }, 1000)
+
+            setTimeout(() => {
+                for (let i = 0; i < InningsScreenies.length; i++) {
+                    downloadScreeny(InningsScreenies[i]);
+                }
+            }, 2000)
+            
+            console.log('second innings end', matchData, winningCause);
+            isBlurred = false;
+        }, 60000)
     };
 
 </script>
@@ -1423,6 +1595,7 @@
 
         <input class="button-batsman-modifier" class:blurred={isBlurred} type="button" value="Add Batsman" bind:this={buttonBatsmanModifier} on:click={BatsmanButton}>
         <input class="button-bowler-modifier"class:blurred={isBlurred}  type="button" value="Add Bowler" bind:this={buttonBowlerModifier} on:click={BowlerButton}>
+        <input class="button-undo-modifier"class:blurred={isBlurred}  type="button" value="Undo" bind:this={buttonUndoBowl} on:click={UndoButton}>
         <input class="button-ball-modifier" class:blurred={isBlurred} type="button" value="Add Ball" bind:this={buttonBallsModifier} on:click={AddBallButton}>
         <input class="button-swap-batter-modifier" class:blurred={isBlurred} type="button" value="Swap Batsman" bind:this={SwapBatsmanModifier} on:click={SwapBatsmanButton}>
         <input class="button-swap-bowler-modifier" class:blurred={isBlurred} type="button" value="Swap Bowler" bind:this={SwapBowlerModifier} on:click={SwapBowlerButton}>
@@ -1550,7 +1723,7 @@
 
     .button-batsman-modifier{
         height: 30px;
-        width: 120px;
+        width: 110px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
         font-size: 1rem;
@@ -1561,7 +1734,7 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 500px;
-        right: 215px;
+        right: 225px;
         position: absolute;
     }
 
@@ -1571,7 +1744,24 @@
 
     .button-bowler-modifier{
         height: 30px;
-        width: 120px;
+        width: 110px;
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Outfit;
+        font-size: 1rem;
+        text-align: center;
+        font-weight: 600;
+        border-radius: 5px;
+        border: 0;
+        /* padding-bottom: 10px; */
+        outline: 0;
+        top: 545px;
+        right: 225px;
+        position: absolute;
+    }
+
+    .button-undo-modifier{
+        height: 75px;
+        width: 65px;
         color: rgba(0, 0, 0, 0.8);
         font-family: Outfit;
         font-size: 1rem;
@@ -1582,8 +1772,12 @@
         /* padding-bottom: 10px; */
         outline: 0;
         top: 500px;
-        left: 215px;
+        left: 270px;
         position: absolute;
+    }
+
+    .button-undo-modifier:active{
+        scale: 0.98;
     }
 
     .button-bowler-modifier:active{
@@ -1631,8 +1825,8 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        top: 545px;
-        right: 215px;
+        top: 500px;
+        right: 95px;
         position: absolute;
     }
 
@@ -1652,7 +1846,7 @@
         border: 0;
         /* padding-bottom: 10px; */
         outline: 0;
-        left: 215px;
+        left: 135px;
         top: 545px;
         position: absolute;
     }
