@@ -85,7 +85,8 @@
     let InningsScreenies = []
     let ScreeniesImages = []
 
-    let testing = true
+    let testing = true;
+    let canUndo = true;
 
     let veryLastBatsman;
     let veryLastBatsmanIndex;
@@ -304,6 +305,10 @@
             return;
         }
 
+        if (!canUndo) {
+            return;
+        }
+
         veryLastBowl.forEach(function(item, index) {
             console.log('1', item, index)
             console.log((typeof item))
@@ -397,7 +402,7 @@
                 };
             };
         }; */
-
+        canUndo = false;
         matchData.selectedOptionsForBall = [];
         console.log(matchData);
         addBallEvent('clear');
@@ -794,6 +799,7 @@
         matchData.selectedOptionsForBall = [];
         console.log(matchData);
         addBallEvent('clear');
+        canUndo = true;
     };
 
     function addBallEvent(p1, p2) {
