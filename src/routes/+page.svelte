@@ -298,6 +298,7 @@
         let veryLastBowl = matchData.currentOver.at(-1);
         let totalRunsThisBall = 0
         let countBall = true;
+        let wicketBall = false;
 
         if (!veryLastBowl) {
             return;
@@ -343,6 +344,7 @@
                 ProcessBowlerStats('wicket', matchData.battingTeamName.activeBatsman, true);
                 ProcessBatsmanStats('wicket', matchData.bowlingTeamName.activeBowler, true);
                 matchData.totalWickets += 1;
+                wicketBall = true;
             };
 
         });
@@ -355,7 +357,13 @@
                 matchData.oversCountFlt = 0.5;
             };
 
-            ProcessBatsmanStats('addBall', '', true);
+
+            if (wicketBall) {
+                ProcessBatsmanStats('addBall', '', true, true);
+            } else {
+                ProcessBatsmanStats('addBall', '', true);                
+            }
+
         };
 
         matchData.runCount = (matchData.runCount - totalRunsThisBall);
@@ -543,7 +551,7 @@
         openedInputBox = false;
     };
 
-    function ProcessBatsmanStats(p1, p2, isUndo) {
+    function ProcessBatsmanStats(p1, p2, isUndo, usePreviousBatter) {
         let currentActiveBatsman = matchData.battingTeamName.activeBatsman;
         console.log(p1, p2)
         if (p1 == 'add') {
@@ -569,14 +577,19 @@
 
         if (p1 == 'addBall'){
             if (isUndo) {
-                matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced -= 1
+                let batterBatter = currentActiveBatsman;
+                if (usePreviousBatter) {
+                    batterBatter = veryLastBatsman;
+                }   
 
-                if (matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced <= 0) {
-                    matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = 0;
+                matchData.battingTeamName.battingData[batterBatter].ballsFaced -= 1
+
+                if (matchData.battingTeamName.battingData[batterBatter].ballsFaced <= 0) {
+                    matchData.battingTeamName.battingData[batterBatter].strikeRate = 0;
                     return;
                 }
 
-                matchData.battingTeamName.battingData[currentActiveBatsman].strikeRate = ((matchData.battingTeamName.battingData[currentActiveBatsman].runs / matchData.battingTeamName.battingData[currentActiveBatsman].ballsFaced) * 100).toFixed(1);
+                matchData.battingTeamName.battingData[batterBatter].strikeRate = ((matchData.battingTeamName.battingData[batterBatter].runs / matchData.battingTeamName.battingData[batterBatter].ballsFaced) * 100).toFixed(1);
                 return;
             }
 
