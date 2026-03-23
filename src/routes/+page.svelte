@@ -90,6 +90,7 @@
 
     let veryLastBatsman;
     let veryLastBatsmanIndex;
+    let veryLastOver;
 
     function ProceedButton() {
         if (!teamNamesEntered && (teamOneName != '' && teamTwoName != '') && !(teamOneName == teamTwoName)) {
@@ -295,12 +296,25 @@
         bowlerInfoBox.style.display = 'block';
     };
 
-    function UndoButton(p1, p2) {
-        let veryLastBowl = matchData.currentOver.at(-1);
+    function UndoButton(decreaseBallCount = true) {
         let totalRunsThisBall = 0
         let countBall = true;
         let wicketBall = false;
 
+        if (countBall && ((matchData.ballCount % 6) == 0)) {
+            ProcessBowlerStats('over', '', true);
+            ProcessBatsmanStats('over', '', true);
+
+            matchData.currentOverNumber -= 1
+            matchData.currentOver = veryLastOver;
+            matchData.oversCountFlt += 0.6;
+            matchData.oversCount -= 1;
+            matchData.ballCount = (matchData.ballCount - 1);
+            UndoButton(false);
+            return;            
+        }     
+
+        let veryLastBowl = matchData.currentOver.at(-1);
         if (!veryLastBowl) {
             return;
         }
@@ -355,7 +369,10 @@
         });
 
         if (countBall) {
-            matchData.ballCount = (matchData.ballCount - 1);
+            if (decreaseBallCount) {
+                matchData.ballCount = (matchData.ballCount - 1);
+            };
+
             matchData.oversCountFlt -= 0.1;
 
             if (matchData.oversCountFlt > 0.5) {
@@ -374,34 +391,6 @@
         matchData.runCount = (matchData.runCount - totalRunsThisBall);
         matchData.currentOver.pop();
 
-/*         if ((matchData.target) && (matchData.runCount >= matchData.target)) {
-            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
-            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
-            matchData.currentOver = [];
-            console.log('match over, by target reached.')
-            SecondInningsEnd();
-        };
-
-        if (countBall && (matchData.ballCount % 6) == 0) {
-            ProcessBowlerStats('over');
-            ProcessBatsmanStats('over');
-            matchData.currentOverNumber = (matchData.currentOverNumber + 1);
-            matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
-            matchData.currentOver = [];
-
-            matchData.oversCountFlt -= 0.5;
-
-            matchData.oversCount += 1;
-
-            if (matchData.maxBallCount == matchData.ballCount) {
-                console.log('innings has ended, by ball count.')
-                if (!(firstInningsEnd)) {
-                    FirstInningsEnd();
-                } else if ((firstInningsEnd)) {
-                    SecondInningsEnd();
-                };
-            };
-        }; */
         canUndo = false;
         matchData.selectedOptionsForBall = [];
         console.log(matchData);
@@ -647,9 +636,11 @@
             if (isUndo) {
                 matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled -= 1;
 
-                let economy = (matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs / matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled);
-                matchData.bowlingTeamName.bowlingData[currentActiveBowler].economy = parseFloat(economy.toFixed(2));
-                CreateActivePlayer('bowling');
+                if ((matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled) > 0) {
+                    let economy = (matchData.bowlingTeamName.bowlingData[currentActiveBowler].runs / matchData.bowlingTeamName.bowlingData[currentActiveBowler].oversBowled);
+                    matchData.bowlingTeamName.bowlingData[currentActiveBowler].economy = parseFloat(economy.toFixed(2));
+                    CreateActivePlayer('bowling');
+                };
                 return;
             };            
 
@@ -770,9 +761,12 @@
         if ((matchData.target) && (matchData.runCount >= matchData.target)) {
             matchData.currentOverNumber = (matchData.currentOverNumber + 1);
             matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            veryLastOver = matchData.currentOver;
             matchData.currentOver = [];
             console.log('match over, by target reached.')
-            SecondInningsEnd();
+            setTimeout(() => {
+                SecondInningsEnd();
+            }, 15000)
         };
 
         if (countBall && (matchData.ballCount % 6) == 0) {
@@ -780,20 +774,22 @@
             ProcessBatsmanStats('over');
             matchData.currentOverNumber = (matchData.currentOverNumber + 1);
             matchData.oversData[matchData.currentOverNumber] = matchData.currentOver;
+            veryLastOver = matchData.currentOver;
             matchData.currentOver = [];
 
             matchData.oversCountFlt -= 0.5;
 
             matchData.oversCount += 1;
-
-            if (matchData.maxBallCount == matchData.ballCount) {
-                console.log('innings has ended, by ball count.')
-                if (!(firstInningsEnd)) {
-                    FirstInningsEnd();
-                } else if ((firstInningsEnd)) {
-                    SecondInningsEnd();
+            setTimeout(() => {
+                if (matchData.maxBallCount == matchData.ballCount) {
+                    console.log('innings has ended, by ball count.')
+                    if (!(firstInningsEnd)) {
+                        FirstInningsEnd();
+                    } else if ((firstInningsEnd)) {
+                        SecondInningsEnd();
+                    };
                 };
-            };
+            }, 15000)
         };
 
         matchData.selectedOptionsForBall = [];
@@ -1037,13 +1033,17 @@
     function SwapBatsmanButton(p1, p2) {
         if ((matchData.battingTeamName.totalBatters < 1) && !(matchData.battingTeamName.activeBatsman == null) && ((Object.keys(matchData.battingTeamName.battingData).length > 0))) {
             console.log('innings is over, by all out.')
-            matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name = matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name.slice(0, -1);
-            matchData.battingTeamName.activeBatsman = null;
-            if (!(firstInningsEnd)) {
-                FirstInningsEnd();
-            } else if ((firstInningsEnd)) {
-                SecondInningsEnd();
-            };
+            setTimeout(() => {
+                if ((matchData.battingTeamName.totalBatters < 1) && !(matchData.battingTeamName.activeBatsman == null) && ((Object.keys(matchData.battingTeamName.battingData).length > 0))) {
+                    matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name = matchData.battingTeamName.battingData[matchData.battingTeamName.activeBatsman].name.slice(0, -1);
+                    matchData.battingTeamName.activeBatsman = null;
+                    if (!(firstInningsEnd)) {
+                        FirstInningsEnd();
+                    } else if ((firstInningsEnd)) {
+                        SecondInningsEnd();
+                    };
+                };
+            }, 15000)
             return;
         };
 
